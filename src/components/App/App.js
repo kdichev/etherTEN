@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { withWeb3 } from './../Web3Provider'
 import { BlockCard } from './../BlockCard/BlockCard'
 import { CardsContainer } from './primitives'
@@ -54,4 +54,4 @@ class App extends Component {
   }
 }
 
-export default withWeb3(App);
+export default withWeb3(App)
