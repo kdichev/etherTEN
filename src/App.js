@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { withWeb3 } from './Web3Provider'
+import { BlockCard } from './components/BlockCard'
 
 class App extends Component {
   state = {
@@ -47,6 +48,7 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
+        <BlockCard />
       </div>
     );
   }
