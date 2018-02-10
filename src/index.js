@@ -6,7 +6,7 @@ import registerServiceWorker from './registerServiceWorker';
 import Web3Provider from './Web3Provider'
 import Web3 from 'web3'
 
-const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+const web3 = new Web3(window.web3.currentProvider);
 
 ReactDOM.render(
   <Web3Provider web3={web3}>
