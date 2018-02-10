@@ -20,7 +20,7 @@ class App extends Component {
   state = {
     blocks: [],
     transactions: [],
-    loading: false,
+    loading: true,
     selected: []
   }
 
@@ -56,11 +56,15 @@ class App extends Component {
     this.setState({
       selected: result
     })
-    //this.handleOpneDialog()
+    this.handleOpneDialog()
   }
 
   handleOpneDialog = () => {
     this.node.showModal()
+  }
+
+  handleOnOutsideClick = (e) => {
+    this.node.close()
   }
 
   render() {
@@ -76,11 +80,10 @@ class App extends Component {
             key={block.hash}
             hash={block.hash}
             onCardClick={this.handleOnBlockCardClick}
-            onClick={() => this.handleOpneDialog()}
           />
         )}
         {this.state.loading && <Loader />}
-        <Dialog innerRef={(node) => this.node = node}>
+        <Dialog innerRef={(node) => this.node = node} onClick={this.handleOnOutsideClick}>
           {this.state.selected.map(item =>
             <DialogContent>
               from: {item.from} <br />
