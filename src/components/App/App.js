@@ -3,6 +3,18 @@ import { withWeb3 } from './../Web3Provider'
 import { BlockCard } from './../BlockCard/BlockCard'
 import { CardsContainer } from './primitives'
 import Loader from './../Loader'
+import styled from 'styled-components'
+
+const Dialog = styled.dialog`
+  border: none;
+  width: 700px;
+  
+`
+const DialogContent = styled.div`
+  border: 1px solid black;
+  padding: 10px;
+  margin-bottom: 10px;
+`
 
 class App extends Component {
   state = {
@@ -44,6 +56,11 @@ class App extends Component {
     this.setState({
       selected: result
     })
+    //this.handleOpneDialog()
+  }
+
+  handleOpneDialog = () => {
+    this.node.showModal()
   }
 
   render() {
@@ -59,15 +76,18 @@ class App extends Component {
             key={block.hash}
             hash={block.hash}
             onCardClick={this.handleOnBlockCardClick}
+            onClick={() => this.handleOpneDialog()}
           />
         )}
         {this.state.loading && <Loader />}
-        {this.state.selected.map(item => 
-          <div>
-            from: {item.from} <br />
-            to: {item.to} <br />
-          </div>
-        )}
+        <Dialog innerRef={(node) => this.node = node}>
+          {this.state.selected.map(item =>
+            <DialogContent>
+              from: {item.from} <br />
+              to: {item.to} <br />
+            </DialogContent>
+          )}
+        </Dialog>
       </CardsContainer>
     );
   }
