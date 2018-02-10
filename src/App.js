@@ -4,18 +4,35 @@ import './App.css';
 import { withWeb3 } from './Web3Provider'
 
 class App extends Component {
+
+  state = {
+    blocks: []
+  }
+
   async componentDidMount() {
-    console.log(this.props)
-    const { web3 } = this.props
-    console.log(web3.eth)
-    const blockNumber = await web3.eth.getBlockNumber()
-    console.log(blockNumber)
+    const { web3: { eth } } = this.props
+
+    const blockNumber = await eth.getBlockNumber()
+    this.handleGetLatestBlocks(blockNumber)
+  }
+
+  handleGetLatestBlocks = async (blockNumber) => {
+    const { web3: { eth } } = this.props
+
     for (let i = 0; i < 10; i++) {
-      const newBlock = await web3.eth.getBlock(blockNumber - i)
-      console.log(newBlock)
+      const { blocks } = this.state
+      const newBlock = await eth.getBlock(blockNumber - i)
+
+      if (newBlock) {
+        this.setState({
+          blocks: [...blocks, newBlock]
+        })
+      }
     }
   }
+
   render() {
+    console.log("Blocks: ", this.state.blocks)
     return (
       <div className="App">
         <header className="App-header">
