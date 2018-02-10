@@ -36,15 +36,14 @@ export const withWeb3 = C => (
 
     render() {
       const { web3 } = this.context
-      const props = {
-        ...this.props,
+      const methods = {
         web3,
         handleGetBlock: this.handleGetBlock,
         handleGetBlockNumber: this.handleGetBlockNumber,
         handleGetTransaction: this.handleGetTransaction
       }
       return (
-        <C {...props} />
+        <C {...this.props} {...methods}/>
       )
     }
   }
@@ -61,7 +60,9 @@ class Web3Provider extends Component {
 
   getChildContext() {
     const { web3 } = this.props
-    return { web3 }
+    return { 
+      web3
+    }
   }
   render() {
     return Children.only(this.props.children)
