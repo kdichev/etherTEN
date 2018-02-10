@@ -4,7 +4,6 @@ import './App.css';
 import { withWeb3 } from './Web3Provider'
 
 class App extends Component {
-
   state = {
     blocks: [],
     transactions: []
@@ -17,19 +16,14 @@ class App extends Component {
     this.handleGetLatestBlocks(blockNumber)
   }
 
-  handleGetLatestBlocks = async (blockNumber) => {
+  handleGetLatestBlocks = async blockNumber => {
     const { web3: { eth } } = this.props
 
     for (let i = 0; i < 10; i++) {
       const { blocks, transactions } = this.state
       const newBlock = await eth.getBlock(blockNumber - i)
+
       if (newBlock) {
-        console.log("Block :", newBlock)
-        console.log("Block hash:", newBlock.hash)
-        console.log("Transactions :" , {
-          blockHash: newBlock.hash,
-          transactions: newBlock.transactions
-        })
         this.setState({
           blocks: [...blocks, newBlock],
           transactions: [
