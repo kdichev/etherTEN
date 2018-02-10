@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import App from './components/App/App';
 import registerServiceWorker from './registerServiceWorker';
-import Web3Provider from './Web3Provider'
+import Web3Provider from './components/Web3Provider'
 import Web3 from 'web3'
 
 const web3 = new Web3(window.web3.currentProvider);
