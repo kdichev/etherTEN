@@ -2,7 +2,7 @@ import React from 'react'
 import { CardContainer, CardHeader, CardContent } from './primitives'
 
 export const BlockCard = (props) => (
-  <CardContainer>
+  <CardContainer onClick={() => props.onCardClick(props.hash)}>
     <CardHeader>
       #{props.number} <br />
       {props.timestamp}
