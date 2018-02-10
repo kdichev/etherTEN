@@ -6,16 +6,17 @@ import ContentLoader from 'react-content-loader'
 
 const Loader = props => (
   <ContentLoader
-    height={97}
-    width={400}
+    height={86}
+    width={530}
     speed={2}
     primaryColor={"#f3f3f3"}
     secondaryColor={"#ecebeb"}
   >
-    <rect x="70" y="15" rx="4" ry="4" width="117" height="6.4" />
-    <rect x="70" y="35" rx="3" ry="3" width="85" height="6.4" />
-    <rect x="4" y="5.27" rx="0" ry="0" width="60.14" height="42.16" />
+    <circle cx="25" cy="25" r="25" />
+    <rect x="64" y="0" rx="0" ry="0" width="149" height="17" />
+    <rect x="64" y="28.27" rx="0" ry="0" width="285" height="12" />
+    <rect x="64" y="48.27" rx="0" ry="0" width="285" height="12" />
   </ContentLoader>
-)
+);
 
 export default Loader

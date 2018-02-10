@@ -4,17 +4,23 @@ import { BlockCard } from './../BlockCard/BlockCard'
 import { CardsContainer } from './primitives'
 import Loader from './../Loader'
 import styled from 'styled-components'
+import moment from 'moment'
 
 const Dialog = styled.dialog`
   border: none;
   width: 700px;
-  
 `
 const DialogContent = styled.div`
   border: 1px solid black;
   padding: 10px;
   margin-bottom: 10px;
 `
+
+const BlockInfoContainer = styled.div`
+  margin-top: 10px;
+`;
+const TransactionsInfoContainer = styled.div`
+`;
 
 class App extends Component {
   state = {
@@ -39,7 +45,8 @@ class App extends Component {
           blocks: [...blocks, newBlock],
           loading: false,
           transactions: [
-            ...transactions, {
+            ...transactions,
+            {
               blockHash: newBlock.hash,
               transactions: newBlock.transactions
             }
@@ -51,11 +58,15 @@ class App extends Component {
 
   handleOnBlockCardClick = async hash => {
     const { transactions } = this.state
-    const selected = transactions.filter((item) => item.blockHash === hash && item).pop()
-    const result = await Promise.all(selected.transactions.map(async (item) => await this.props.handleGetTransaction(item)))
-    this.setState({
-      selected: result
-    })
+    const selected = transactions
+      .filter(item => item.blockHash === hash && item)
+      .pop()
+    const result = await Promise.all(
+      selected.transactions.map(
+        async item => await this.props.handleGetTransaction(item)
+      )
+    )
+    this.setState({ selected: result })
     this.handleOpneDialog()
   }
 
@@ -63,7 +74,7 @@ class App extends Component {
     this.node.showModal()
   }
 
-  handleOnOutsideClick = (e) => {
+  handleOnOutsideClick = e => {
     this.node.close()
   }
 
@@ -71,28 +82,34 @@ class App extends Component {
     const { blocks } = this.state
     return (
       <CardsContainer>
-        {blocks.map(block =>
-          <BlockCard 
+        {blocks.map(block => (
+          <BlockCard
             number={block.number}
-            timestamp={block.timestamp}
+            timestamp={moment().diff(moment.unix(block.timestamp), 'seconds')}
             miner={block.miner}
             txns={block.transactions.length}
             key={block.hash}
             hash={block.hash}
             onCardClick={this.handleOnBlockCardClick}
-          />
-        )}
+          >
+            <BlockInfoContainer>Block Info</BlockInfoContainer>
+            <TransactionsInfoContainer>Transactions info</TransactionsInfoContainer>
+          </BlockCard>
+        ))}
         {this.state.loading && <Loader />}
-        <Dialog innerRef={(node) => this.node = node} onClick={this.handleOnOutsideClick}>
-          {this.state.selected.map(item =>
+        <Dialog
+          innerRef={node => (this.node = node)}
+          onClick={this.handleOnOutsideClick}
+        >
+          {this.state.selected.map(item => (
             <DialogContent>
               from: {item.from} <br />
               to: {item.to} <br />
             </DialogContent>
-          )}
+          ))}
         </Dialog>
       </CardsContainer>
-    );
+    )
   }
 }
 

@@ -1,10 +1,10 @@
 import React, { Component, Children } from 'react'
 import PropTypes from 'prop-types'
 
-export const withWeb3 = C => (
+export const withWeb3 = C =>
   class Web3Component extends Component {
     static contextTypes = {
-      web3: PropTypes.object.isRequired,
+      web3: PropTypes.object.isRequired
     }
 
     handleGetBlockNumber = async () => {
@@ -42,25 +42,22 @@ export const withWeb3 = C => (
         handleGetBlockNumber: this.handleGetBlockNumber,
         handleGetTransaction: this.handleGetTransaction
       }
-      return (
-        <C {...this.props} {...methods}/>
-      )
+      return <C {...this.props} {...methods} />
     }
   }
-)
 
 class Web3Provider extends Component {
   static propTypes = {
-    web3: PropTypes.object.isRequired,
+    web3: PropTypes.object.isRequired
   }
 
   static childContextTypes = {
-    web3: PropTypes.object.isRequired,
+    web3: PropTypes.object.isRequired
   }
 
   getChildContext() {
     const { web3 } = this.props
-    return { 
+    return {
       web3
     }
   }
