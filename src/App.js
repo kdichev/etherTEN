@@ -4,8 +4,16 @@ import './App.css';
 import { withWeb3 } from './Web3Provider'
 
 class App extends Component {
-  componentDidMount() {
+  async componentDidMount() {
     console.log(this.props)
+    const { web3 } = this.props
+    console.log(web3.eth)
+    const blockNumber = await web3.eth.getBlockNumber()
+    console.log(blockNumber)
+    for (let i = 0; i < 10; i++) {
+      const newBlock = await web3.eth.getBlock(blockNumber - i)
+      console.log(newBlock)
+    }
   }
   render() {
     return (
