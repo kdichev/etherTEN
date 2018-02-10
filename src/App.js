@@ -6,7 +6,8 @@ import { withWeb3 } from './Web3Provider'
 class App extends Component {
 
   state = {
-    blocks: []
+    blocks: [],
+    transactions: []
   }
 
   async componentDidMount() {
@@ -20,19 +21,29 @@ class App extends Component {
     const { web3: { eth } } = this.props
 
     for (let i = 0; i < 10; i++) {
-      const { blocks } = this.state
+      const { blocks, transactions } = this.state
       const newBlock = await eth.getBlock(blockNumber - i)
-
       if (newBlock) {
+        console.log("Block :", newBlock)
+        console.log("Block hash:", newBlock.hash)
+        console.log("Transactions :" , {
+          blockHash: newBlock.hash,
+          transactions: newBlock.transactions
+        })
         this.setState({
-          blocks: [...blocks, newBlock]
+          blocks: [...blocks, newBlock],
+          transactions: [
+            ...transactions, {
+              blockHash: newBlock.hash,
+              transactions: newBlock.transactions
+            }
+          ]
         })
       }
     }
   }
 
   render() {
-    console.log("Blocks: ", this.state.blocks)
     return (
       <div className="App">
         <header className="App-header">
