@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { withWeb3 } from './Web3Provider'
 
 class App extends Component {
+  componentDidMount() {
+    console.log(this.props)
+  }
   render() {
     return (
       <div className="App">
@@ -18,4 +22,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withWeb3(App);
