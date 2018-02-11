@@ -1,41 +1,46 @@
-import React, { Component } from "react";
-import { withWeb3 } from "./../Web3Provider";
-import { BlockCard } from "./../BlockCard/BlockCard";
-import { BlockInfo } from "./../BlockInfo/BlockInfo";
-import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
-import { CardsContainer } from "./primitives";
-import Loader from "./../Loader";
-import styled from "styled-components";
-import moment from "moment";
-
-const Dialog = styled.dialog`
-  border: none;
-  width: 700px;
-`;
-const DialogContent = styled.div`
-  border: 1px solid black;
-  padding: 10px;
-  margin-bottom: 10px;
-`;
+import React, { Component } from "react"
+import { withWeb3 } from "./../Web3Provider"
+import { BlockCard } from "./../BlockCard/BlockCard"
+import { BlockInfo } from "./../BlockInfo/BlockInfo"
+import { BlockTransactions } from "./../BlockTransactions/BlockTransactions"
+import { CardsContainer } from "./primitives"
+import Loader from "./../Loader"
+import moment from "moment"
 
 class App extends Component {
   state = {
     blocks: [],
     transactions: [],
     loading: true,
-    selected: [],
-  };
+    selected: []
+  }
 
   async componentDidMount() {
-    const blockNumber = await this.props.handleGetBlockNumber();
-    this.handleGetLatestBlocks(blockNumber);
+    const blockNumber = await this.props.handleGetBlockNumber()
+    await this.handleGetLatestBlocks(blockNumber)
+    this.handleGetBlockTransactionsInfo()
+  }
+
+  handleGetBlockTransactionsInfo = async () => {
+    const result = await Promise.all(
+      this.state.transactions.map(
+        async item =>
+          await Promise.all(
+            item.transactions.map(
+              async trx => await this.props.handleGetTransaction(trx)
+            )
+          )
+      )
+    )
+    console.log(this.state.transactions)
+    console.log(result)
   }
 
   handleGetLatestBlocks = async blockNumber => {
     for (let i = 0; i < 10; i++) {
-      this.setState({ loading: true });
-      const { blocks, transactions } = this.state;
-      const newBlock = await this.props.handleGetBlock(blockNumber, i);
+      this.setState({ loading: true })
+      const { blocks, transactions } = this.state
+      const newBlock = await this.props.handleGetBlock(blockNumber, i)
       if (newBlock) {
         this.setState({
           blocks: [...blocks, newBlock],
@@ -47,26 +52,13 @@ class App extends Component {
               transactions: newBlock.transactions
             }
           ]
-        });
+        })
       }
     }
-  };
-
-  handleOnBlockCardClick = async hash => {
-    const { transactions } = this.state;
-    const selected = transactions
-      .filter(item => item.blockHash === hash && item)
-      .pop();
-    const result = await Promise.all(
-      selected.transactions.map(
-        async item => await this.props.handleGetTransaction(item)
-      )
-    );
-    this.setState({ selected: result });
-  };
+  }
 
   render() {
-    const { blocks } = this.state;
+    const { blocks, selected, loading } = this.state
     return (
       <CardsContainer>
         {blocks.map(block => (
@@ -77,18 +69,15 @@ class App extends Component {
             txns={block.transactions.length}
             key={block.hash}
             hash={block.hash}
-            onCardClick={this.handleOnBlockCardClick}
           >
-            <BlockInfo block={block}/>
-            <BlockTransactions
-              selected={this.state.selected}
-            />
+            <BlockInfo block={block} />
+            <BlockTransactions selected={selected} />
           </BlockCard>
         ))}
-        {this.state.loading && <Loader />}
+        {loading && <Loader />}
       </CardsContainer>
-    );
+    )
   }
 }
 
-export default withWeb3(App);
+export default withWeb3(App)
