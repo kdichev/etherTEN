@@ -1,23 +1,27 @@
 import React from 'react'
-import { CardHeaderContainer, CardHeader, CardContent, CardFooter } from './primitives'
+import {
+  CardHeaderContainer,
+  CardHeader,
+  CardContent,
+  CardFooter,
+  Avatar,
+  CardContainer
+} from "./primitives";
 import styled from 'styled-components'
 
-const Avatar = styled.img`
-  width: 70%;
-  height: auto;
-  border-radius: 50%;
-  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
-    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+function truncate(width) {
+  return `
+    width: ${width};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  `;
+}
+
+// Make this div truncate the text with an ellipsis
+const Box = styled.div`
+  ${ truncate('350px') }
 `;
-
-const CardContainer = styled.div`
-  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
-    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
-  margin-bottom: 10px;
-  padding: 10px 15px;
-`;
-
-
 
 export const BlockCard = (props) => (
   <CardContainer>
@@ -28,7 +32,7 @@ export const BlockCard = (props) => (
       <CardContent>
         <b>Block</b> <span onClick={() => props.onCardClick(props.hash)}>{props.number}</span>
         <br />
-        Mined By: {props.miner} <br />
+        <Box>Mined By: {props.miner}</Box>
         includes {props.txns} Transactions
       </CardContent>
       <CardFooter>

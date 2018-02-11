@@ -1,25 +1,21 @@
-import React, { Component } from 'react'
-import { withWeb3 } from './../Web3Provider'
-import { BlockCard } from './../BlockCard/BlockCard'
-import { CardsContainer } from './primitives'
-import Loader from './../Loader'
-import styled from 'styled-components'
-import moment from 'moment'
+import React, { Component } from "react";
+import { withWeb3 } from "./../Web3Provider";
+import { BlockCard } from "./../BlockCard/BlockCard";
+import { BlockInfo } from "./../BlockInfo/BlockInfo";
+import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
+import { CardsContainer } from "./primitives";
+import Loader from "./../Loader";
+import styled from "styled-components";
+import moment from "moment";
 
 const Dialog = styled.dialog`
   border: none;
   width: 700px;
-`
+`;
 const DialogContent = styled.div`
   border: 1px solid black;
   padding: 10px;
   margin-bottom: 10px;
-`
-
-const BlockInfoContainer = styled.div`
-  margin-top: 10px;
-`;
-const TransactionsInfoContainer = styled.div`
 `;
 
 class App extends Component {
@@ -27,19 +23,19 @@ class App extends Component {
     blocks: [],
     transactions: [],
     loading: true,
-    selected: []
-  }
+    selected: [],
+  };
 
   async componentDidMount() {
-    const blockNumber = await this.props.handleGetBlockNumber()
-    this.handleGetLatestBlocks(blockNumber)
+    const blockNumber = await this.props.handleGetBlockNumber();
+    this.handleGetLatestBlocks(blockNumber);
   }
 
   handleGetLatestBlocks = async blockNumber => {
     for (let i = 0; i < 10; i++) {
-      this.setState({ loading: true })
-      const { blocks, transactions } = this.state
-      const newBlock = await this.props.handleGetBlock(blockNumber, i)
+      this.setState({ loading: true });
+      const { blocks, transactions } = this.state;
+      const newBlock = await this.props.handleGetBlock(blockNumber, i);
       if (newBlock) {
         this.setState({
           blocks: [...blocks, newBlock],
@@ -51,66 +47,48 @@ class App extends Component {
               transactions: newBlock.transactions
             }
           ]
-        })
+        });
       }
     }
-  }
+  };
 
   handleOnBlockCardClick = async hash => {
-    const { transactions } = this.state
+    const { transactions } = this.state;
     const selected = transactions
       .filter(item => item.blockHash === hash && item)
-      .pop()
+      .pop();
     const result = await Promise.all(
       selected.transactions.map(
         async item => await this.props.handleGetTransaction(item)
       )
-    )
-    this.setState({ selected: result })
-    this.handleOpneDialog()
-  }
-
-  handleOpneDialog = () => {
-    this.node.showModal()
-  }
-
-  handleOnOutsideClick = e => {
-    this.node.close()
-  }
+    );
+    this.setState({ selected: result });
+  };
 
   render() {
-    const { blocks } = this.state
+    const { blocks } = this.state;
     return (
       <CardsContainer>
         {blocks.map(block => (
           <BlockCard
             number={block.number}
-            timestamp={moment().diff(moment.unix(block.timestamp), 'seconds')}
+            timestamp={moment().diff(moment.unix(block.timestamp), "seconds")}
             miner={block.miner}
             txns={block.transactions.length}
             key={block.hash}
             hash={block.hash}
             onCardClick={this.handleOnBlockCardClick}
           >
-            <BlockInfoContainer>Block Info</BlockInfoContainer>
-            <TransactionsInfoContainer>Transactions info</TransactionsInfoContainer>
+            <BlockInfo block={block}/>
+            <BlockTransactions
+              selected={this.state.selected}
+            />
           </BlockCard>
         ))}
         {this.state.loading && <Loader />}
-        <Dialog
-          innerRef={node => (this.node = node)}
-          onClick={this.handleOnOutsideClick}
-        >
-          {this.state.selected.map(item => (
-            <DialogContent>
-              from: {item.from} <br />
-              to: {item.to} <br />
-            </DialogContent>
-          ))}
-        </Dialog>
       </CardsContainer>
-    )
+    );
   }
 }
 
-export default withWeb3(App)
+export default withWeb3(App);
