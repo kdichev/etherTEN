@@ -30,10 +30,10 @@ export const BlockCard = (props) => (
         <Avatar src={`http://tinygraphs.com/squares/${props.hash}?theme=seascape&numcolors=4&size=220&fmt=svg`} />
       </CardHeader>
       <CardContent>
-        <b>Block</b> <span onClick={() => props.onCardClick(props.hash)}>{props.number}</span>
+        <b>Block</b> <a href={props.hash}>{props.number}</a>
         <br />
         <Box>Mined By: {props.miner}</Box>
-        includes {props.txns} Transactions
+        includes <a href={props.hash}>{props.txns}</a> Transactions
       </CardContent>
       <CardFooter>
         <span>

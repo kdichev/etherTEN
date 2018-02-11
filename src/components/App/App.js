@@ -12,35 +12,55 @@ class App extends Component {
     blocks: [],
     transactions: [],
     loading: true,
-    selected: []
+    selected: [],
+    transactionsInfo: [],
+    tLoading: false,
+    tLoadingFinished: false
+  };
+
+  componentDidMount() {
+    this.handleAsync();
   }
 
-  async componentDidMount() {
-    const blockNumber = await this.props.handleGetBlockNumber()
-    await this.handleGetLatestBlocks(blockNumber)
-    this.handleGetBlockTransactionsInfo()
+  async handleAsync() {
+    const blockNumber = await this.props.handleGetBlockNumber();
+    await this.handleGetLatestBlocks(blockNumber);
+    this.handleGetBlockTransactionsInfo();
   }
 
   handleGetBlockTransactionsInfo = async () => {
+    this.setState({
+      tLoading: true
+    })
     const result = await Promise.all(
       this.state.transactions.map(
-        async item =>
+        async item => {
           await Promise.all(
-            item.transactions.map(
-              async trx => await this.props.handleGetTransaction(trx)
-            )
-          )
+            item.transactions.map(async trx => {
+              item.transactionsInfo = item.transactionsInfo ? item.transactionsInfo : [];
+              item.transactionsInfo.push(await this.props.handleGetTransaction(trx))
+              return item = {
+                ...item,
+                transactionsInfo: item.transactionsInfo
+              }
+            }
+          ))
+          return item
+        }
       )
-    )
-    console.log(this.state.transactions)
-    console.log(result)
-  }
+    );
+    this.setState({
+      transactionsInfo: result,
+      tLoading: false,
+      tLoadingFinished: true
+    });
+  };
 
   handleGetLatestBlocks = async blockNumber => {
     for (let i = 0; i < 10; i++) {
-      this.setState({ loading: true })
-      const { blocks, transactions } = this.state
-      const newBlock = await this.props.handleGetBlock(blockNumber, i)
+      this.setState({ loading: true });
+      const { blocks, transactions } = this.state;
+      const newBlock = await this.props.handleGetBlock(blockNumber, i);
       if (newBlock) {
         this.setState({
           blocks: [...blocks, newBlock],
@@ -52,13 +72,13 @@ class App extends Component {
               transactions: newBlock.transactions
             }
           ]
-        })
+        });
       }
     }
-  }
+  };
 
   render() {
-    const { blocks, selected, loading } = this.state
+    const { blocks, selected, loading } = this.state;
     return (
       <CardsContainer>
         {blocks.map(block => (
@@ -71,12 +91,13 @@ class App extends Component {
             hash={block.hash}
           >
             <BlockInfo block={block} />
-            <BlockTransactions selected={selected} />
+            <BlockTransactions loading={this.state.tLoadingFinished} info={this.state.transactionsInfo} blockHash={block.hash} />
+            {this.state.tLoading && 'Loading...'}
           </BlockCard>
         ))}
         {loading && <Loader />}
       </CardsContainer>
-    )
+    );
   }
 }
 
