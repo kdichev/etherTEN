@@ -1,7 +1,11 @@
 import React from "react";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 
-const TransactionsInfoContainer = styled.div``;
+const TransactionsInfoContainer = styled.div`
+  transition: height 200ms linear;
+  overflow: auto;
+  height: ${props => props.loading ? "200px" : '0px'};
+`;
 
 const DialogContent = styled.div`
   padding: 10px;
@@ -28,15 +32,26 @@ const Arrow = styled.div`
   flex: 1;
 `
 
+const MiniAvatar = styled.img`
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+`
+
 export const  BlockTransactions = props => (
-  <TransactionsInfoContainer>
+  <TransactionsInfoContainer loading={props.loading}>
     <b>Transactions:</b> <br />
-    {props.selected.map(item =>
-      <DialogContent>
-        <b>From:</b> <Box> {item.from}</Box>
-        <Arrow>&rarr;</Arrow>
-        <b>To:</b> <Box> {item.to}</Box>
-      </DialogContent>
+    {props.info.map(item =>
+      props.blockHash === item.blockHash && 
+        item.transactionsInfo.map(tInfo =>
+          <DialogContent>
+            {/* <MiniAvatar src={`http://tinygraphs.com/squares/${tInfo.from}?theme=seascape&numcolors=4&size=25&fmt=svg`} /> */}
+            <b>From:</b> <Box> {tInfo.from}</Box>
+            <Arrow>&rarr;</Arrow>
+            {/* <MiniAvatar src={`http://tinygraphs.com/squares/${tInfo.to}?theme=seascape&numcolors=4&size=25&fmt=svg`} /> */}
+            <b>To:</b> <Box> {tInfo.to}</Box>
+          </DialogContent>
+        )
     )}
   </TransactionsInfoContainer>
 );

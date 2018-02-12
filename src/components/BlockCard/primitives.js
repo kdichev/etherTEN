@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, {keyframes} from 'styled-components'
 
 export const CardHeaderContainer = styled.div`
   background-color: white;
@@ -26,6 +26,15 @@ export const CardFooter = styled.div`
   display: flex;
   flex-direction: column;
 `
+const rotate360 = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+`;
 
 export const Avatar = styled.img`
   width: 70%;
@@ -33,6 +42,9 @@ export const Avatar = styled.img`
   border-radius: 50%;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
     0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+  ${props => props.loading &&
+    `animation: ${rotate360} 2s linear infinite;`
+  }
 `;
 
 export const CardContainer = styled.div`
