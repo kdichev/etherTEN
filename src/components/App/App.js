@@ -79,25 +79,32 @@ class App extends Component {
 
   render() {
     const { blocks, selected, loading } = this.state;
-    return (
-      <CardsContainer>
+    return <CardsContainer>
         {blocks.map(block => (
           <BlockCard
             number={block.number}
-            timestamp={moment().diff(moment.unix(block.timestamp), "seconds")}
+            timestamp={moment().diff(
+              moment.unix(block.timestamp),
+              "seconds"
+            )}
             miner={block.miner}
             txns={block.transactions.length}
             key={block.hash}
             hash={block.hash}
+            loading={this.state.tLoading}
           >
             <BlockInfo block={block} />
-            <BlockTransactions loading={this.state.tLoadingFinished} info={this.state.transactionsInfo} blockHash={block.hash} />
-            {this.state.tLoading && 'Loading...'}
+            {(
+              <BlockTransactions
+                loading={this.state.tLoadingFinished}
+                info={this.state.transactionsInfo}
+                blockHash={block.hash}
+              />
+            )}
           </BlockCard>
         ))}
         {loading && <Loader />}
-      </CardsContainer>
-    );
+      </CardsContainer>;
   }
 }
 

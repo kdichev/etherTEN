@@ -27,7 +27,7 @@ export const BlockCard = (props) => (
   <CardContainer>
     <CardHeaderContainer>
       <CardHeader>
-        <Avatar src={`http://tinygraphs.com/squares/${props.hash}?theme=seascape&numcolors=4&size=220&fmt=svg`} />
+        <Avatar src={`http://tinygraphs.com/squares/${props.hash}?theme=seascape&numcolors=4&size=220&fmt=svg`} loading={props.loading}/>
       </CardHeader>
       <CardContent>
         <b>Block</b> <a href={props.hash}>{props.number}</a>

@@ -1,9 +1,10 @@
 import React from "react";
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 
 const TransactionsInfoContainer = styled.div`
+  transition: height 200ms linear;
   overflow: auto;
-  height: ${props => props.loading ? "200px" : 'auto'};
+  height: ${props => props.loading ? "200px" : '0px'};
 `;
 
 const DialogContent = styled.div`
@@ -44,9 +45,11 @@ export const  BlockTransactions = props => (
       props.blockHash === item.blockHash && 
         item.transactionsInfo.map(tInfo =>
           <DialogContent>
-            <MiniAvatar src={`http://tinygraphs.com/squares/${tInfo.from}?theme=seascape&numcolors=4&size=220&fmt=svg`} /><b>From:</b> <Box> {tInfo.from}</Box>
+            {/* <MiniAvatar src={`http://tinygraphs.com/squares/${tInfo.from}?theme=seascape&numcolors=4&size=25&fmt=svg`} /> */}
+            <b>From:</b> <Box> {tInfo.from}</Box>
             <Arrow>&rarr;</Arrow>
-            <MiniAvatar src={`http://tinygraphs.com/squares/${tInfo.to}?theme=seascape&numcolors=4&size=220&fmt=svg`} /><b>To:</b> <Box> {tInfo.to}</Box>
+            {/* <MiniAvatar src={`http://tinygraphs.com/squares/${tInfo.to}?theme=seascape&numcolors=4&size=25&fmt=svg`} /> */}
+            <b>To:</b> <Box> {tInfo.to}</Box>
           </DialogContent>
         )
     )}
