@@ -1,8 +1,8 @@
-import React, { Component, Children } from 'react'
-import PropTypes from 'prop-types'
+import React from "react"
+import PropTypes from "prop-types"
 
 export const withWeb3 = C =>
-  class Web3Component extends Component {
+  class Web3Component extends React.Component {
     static contextTypes = {
       web3: PropTypes.object.isRequired
     }
@@ -12,16 +12,22 @@ export const withWeb3 = C =>
       try {
         return await eth.getBlockNumber()
       } catch (e) {
-        throw new Error('Failed to fetch Block Number', e)
+        throw new Error("Failed to fetch Block Number", e)
       }
     }
 
     handleGetBlock = async (blockNumber, i) => {
       const { web3: { eth } } = this.context
       try {
-        return await eth.getBlock(blockNumber - i)
+        const response = await eth.getBlock(blockNumber - i)
+        //TODO: research why response is null
+        if (response) {
+          const { difficulty, transactions, number, timestamp, miner, hash, name } = response;
+          return { difficulty, transactions, number, timestamp, miner, hash, name }
+        }
       } catch (e) {
-        throw new Error('Failed to fetch Block', e)
+        console.log(e)
+        throw new Error("Failed to fetch Block", e)
       }
     }
 
@@ -30,14 +36,12 @@ export const withWeb3 = C =>
       try {
         return await eth.getTransaction(hash)
       } catch (e) {
-        throw new Error('Failed to fetch Block', e)
+        throw new Error("Failed to fetch Block", e)
       }
     }
 
     render() {
-      const { web3 } = this.context
       const methods = {
-        web3,
         handleGetBlock: this.handleGetBlock,
         handleGetBlockNumber: this.handleGetBlockNumber,
         handleGetTransaction: this.handleGetTransaction
@@ -46,7 +50,7 @@ export const withWeb3 = C =>
     }
   }
 
-class Web3Provider extends Component {
+class Web3Provider extends React.Component {
   static propTypes = {
     web3: PropTypes.object.isRequired
   }
@@ -56,13 +60,14 @@ class Web3Provider extends Component {
   }
 
   getChildContext() {
-    const { web3 } = this.props
+    const { web3, children } = this.props
     return {
       web3
     }
   }
   render() {
-    return Children.only(this.props.children)
+    const { children } = this.props
+    return React.Children.only(children)
   }
 }
 
