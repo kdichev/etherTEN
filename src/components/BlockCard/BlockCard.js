@@ -1,3 +1,4 @@
+// @flow
 import React from "react";
 import {
   CardHeaderContainer,
@@ -11,7 +12,16 @@ import {
 } from "./primitives";
 import styled from "styled-components";
 
-export const BlockCard = props => (
+type CardProps = {
+  hash: string,
+  number: number,
+  miner: string,
+  timestamp: string,
+  transactions: [],
+  children?: {}
+};
+
+export const BlockCard = (props: CardProps) => (
   <CardContainer>
     <CardHeaderContainer>
       <CardHeader>
@@ -19,17 +29,17 @@ export const BlockCard = props => (
           src={`http://tinygraphs.com/squares/${
             props.hash
           }?theme=seascape&numcolors=4&size=220&fmt=svg`}
-          loading={props.loading}
         />
       </CardHeader>
       <CardContent>
         <b>Block</b> <a href={props.hash}>{props.number}</a>
         <br />
         <Box>Mined By: {props.miner}</Box>
-        includes <a href={props.hash}>{props.txns}</a> Transactions
+        includes <a href={props.hash}>{props.transactions.length}</a>{" "}
+        Transactions
       </CardContent>
       <CardFooter>
-        <span>{props.timestamp} seconds ago</span>
+        <span>{props.timestamp} ago</span>
       </CardFooter>
     </CardHeaderContainer>
     {props.children}

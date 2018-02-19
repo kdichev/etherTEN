@@ -1,150 +1,68 @@
+// @flow
 import React, { Component } from "react";
 import { withWeb3 } from "./../Web3Provider";
 import { BlockCard } from "./../BlockCard/BlockCard";
 import { BlockInfo } from "./../BlockInfo/BlockInfo";
 import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
-import { CardsContainer } from "./primitives";
+import { CardsContainer, Fade } from "./primitives";
 import Loader from "./../Loader";
 import { TransitionGroup } from "react-transition-group";
-import transition from "styled-transition-group";
 
-export const Fade = transition.div`
-  &:enter { opacity: 0.01; }
-  &:enter-active {
-    opacity: 1;
-    transition: all ${props => props.timing} ease-in;
-  }
-`;
+type Props = {
+  handleGetBlockNumber: () => number,
+  handleGetBlock: (block: number, i: number) => Block
+};
 
-export const FadeWithSlide = transition.div`
-  height: 0px;
-  &:enter { height: 0px; opacity: 0; color: transparent; }
-  &:enter-active {
-    color: black;
-    height: 250px;
-    opacity: 1;
-    transition: all ${props => props.timing} ease-in;
-  }
-`;
+type Block = {
+  difficulty: number,
+  hash: string,
+  loading: boolean,
+  number: number,
+  miner: string,
+  txns: number,
+  timestamp: string,
+  transactions: []
+};
 
-class App extends Component {
+type State = {
+  blocks: Array<Block>
+};
+
+class App extends Component<Props, State> {
   state = {
-    blocks: [],
-    loading: true,
-    tLoading: true,
-    tLoadingFinished: true,
-    noProvider: false
+    blocks: []
   };
 
   componentDidMount() {
-    this.handleAsync();
+    this.initAsyncFlow();
   }
 
-  async handleAsync() {
-    try {
-      const blockNumber = await this.props.handleGetBlockNumber();
-      await this.handleGetLatestBlocks(blockNumber);
-      this.getTransactionsInfo();
-    } catch (e) {
-      this.setState({
-        loading: false,
-        noProvider: true
-      });
-    }
+  async initAsyncFlow() {
+    const latestBlockNumber = await this.props.handleGetBlockNumber();
+    await this.getLatestBlocks(latestBlockNumber);
   }
 
-  getInfo = async transactions => {
-    let info = await Promise.all(
-      transactions.map(async trx => await this.props.handleGetTransaction(trx))
-    );
-    return info;
-  };
-
-  getTransactionsInfo = async () => {
-    // await Promise.race(
-    //   this.state.blocks.map(async block => {
-    //     const updatedBlock = {
-    //       ...block,
-    //       transactionsInfo: await this.getInfo(block.transactions)
-    //     }
-    //     console.log(updatedBlock)
-    //   })
-    // )
-    this.setState({
-      blocks: await Promise.all(
-        this.state.blocks.map(async block => {
-          return {
-            ...block,
-            transactionsInfo: await this.getInfo(block.transactions)
-          };
-        })
-      ),
-      tLoadingFinished: true,
-      tLoading: false
-    });
-  };
-
-  handleGetLatestBlocks = async blockNumber => {
+  getLatestBlocks = async blockNumber => {
     for (let i = 1; i < 10; i++) {
-      const { blocks } = this.state;
-      const newBlock = await this.props.handleGetBlock(blockNumber, i);
-      this.setState({ loading: true });
+      const newBlock: Block = await this.props.handleGetBlock(blockNumber, i);
       if (newBlock) {
         this.setState({
-          blocks: [...blocks, newBlock],
-          loading: false
+          blocks: [...this.state.blocks, newBlock]
         });
       }
     }
   };
 
-  componentDidCatch() {
-    this.setState({
-      crash: true
-    });
-  }
-
   render() {
-    const {
-      blocks,
-      loading,
-      noProvider,
-      tLoading,
-      tLoadingFinished
-    } = this.state;
-    console.log(this.state.blocks);
     return (
       <CardsContainer>
         <TransitionGroup>
-          {blocks.map(block => (
-            <Fade timing="300ms">
-              <BlockCard
-                number={block.number}
-                timestamp={block.timestamp}
-                miner={block.miner}
-                txns={block.transactions.length}
-                key={block.hash}
-                hash={block.hash}
-                loading={tLoading}
-              >
-                <BlockInfo block={block} />
-                <TransitionGroup>
-                  {block.transactionsInfo && (
-                    <FadeWithSlide timing="300ms">
-                      <BlockTransactions
-                        loading={tLoadingFinished}
-                        info={block.transactionsInfo}
-                        blockHash={block.hash}
-                      />
-                    </FadeWithSlide>
-                  )}
-                </TransitionGroup>
-              </BlockCard>
+          {this.state.blocks.map((block: Block) => (
+            <Fade timing="100ms">
+              <BlockCard {...block} key={block.hash} />
             </Fade>
           ))}
         </TransitionGroup>
-        {loading && <Loader />}
-        {noProvider && <div>No provider install MetaMask.</div>}
       </CardsContainer>
     );
   }
