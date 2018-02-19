@@ -5,31 +5,27 @@ import {
   CardHeader,
   CardContent,
   CardFooter,
-  Avatar,
   CardContainer,
-  Box,
-  Fade
+  Box
+  //Avatar,
+  //Fade
 } from "./primitives";
-import styled from "styled-components";
+import Blockies from "react-blockies";
+//import styled from "styled-components";
 
 type CardProps = {
   hash: string,
   number: number,
   miner: string,
   timestamp: string,
-  transactions: [],
-  children?: {}
+  transactions: []
 };
 
 export const BlockCard = (props: CardProps) => (
   <CardContainer>
     <CardHeaderContainer>
       <CardHeader>
-        <Avatar
-          src={`http://tinygraphs.com/squares/${
-            props.hash
-          }?theme=seascape&numcolors=4&size=220&fmt=svg`}
-        />
+        <Blockies seed={props.hash} scale={7} />
       </CardHeader>
       <CardContent>
         <b>Block</b> <a href={props.hash}>{props.number}</a>
@@ -42,6 +38,5 @@ export const BlockCard = (props: CardProps) => (
         <span>{props.timestamp} ago</span>
       </CardFooter>
     </CardHeaderContainer>
-    {props.children}
   </CardContainer>
 );

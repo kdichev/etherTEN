@@ -1,13 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export const withWeb3 = C =>
+export const withWeb3: Connector = C =>
   class Web3Component extends React.Component {
     static contextTypes = {
       web3: PropTypes.object.isRequired
     };
 
-    handleGetBlockNumber = async () => {
+    getBlockNumber = async () => {
       const { web3: { eth } } = this.context;
       try {
         return await eth.getBlockNumber();
@@ -16,7 +16,7 @@ export const withWeb3 = C =>
       }
     };
 
-    handleGetBlock = async (blockNumber, i) => {
+    getBlock = async (blockNumber, i) => {
       const { web3: { eth } } = this.context;
       try {
         const response = await eth.getBlock(blockNumber - i);
@@ -28,8 +28,7 @@ export const withWeb3 = C =>
             number,
             timestamp,
             miner,
-            hash,
-            name
+            hash
           } = response;
           return {
             difficulty,
@@ -37,8 +36,7 @@ export const withWeb3 = C =>
             number,
             timestamp,
             miner,
-            hash,
-            name
+            hash
           };
         }
       } catch (e) {
@@ -47,7 +45,7 @@ export const withWeb3 = C =>
       }
     };
 
-    handleGetTransaction = async (hash: string) => {
+    getTransaction = async hash => {
       const { web3: { eth } } = this.context;
       try {
         return await eth.getTransaction(hash);
@@ -58,9 +56,9 @@ export const withWeb3 = C =>
 
     render() {
       const methods = {
-        handleGetBlock: this.handleGetBlock,
-        handleGetBlockNumber: this.handleGetBlockNumber,
-        handleGetTransaction: this.handleGetTransaction
+        getBlock: this.getBlock,
+        getBlockNumber: this.getBlockNumber,
+        getTransaction: this.getTransaction
       };
       return <C {...this.props} {...methods} />;
     }
@@ -76,7 +74,7 @@ class Web3Provider extends React.Component {
   };
 
   getChildContext() {
-    const { web3, children } = this.props;
+    const { web3 } = this.props;
     return {
       web3
     };

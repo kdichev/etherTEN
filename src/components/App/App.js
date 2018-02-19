@@ -2,26 +2,27 @@
 import React, { Component } from "react";
 import { withWeb3 } from "./../Web3Provider";
 import { BlockCard } from "./../BlockCard/BlockCard";
-import { BlockInfo } from "./../BlockInfo/BlockInfo";
-import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
 import { CardsContainer, Fade } from "./primitives";
-import Loader from "./../Loader";
 import { TransitionGroup } from "react-transition-group";
+//import Loader from "./../Loader";
+//import { BlockInfo } from "./../BlockInfo/BlockInfo";
+//import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
 
-type Props = {
-  handleGetBlockNumber: () => number,
-  handleGetBlock: (block: number, i: number) => Block
-};
+type BlockNumber = number;
 
 type Block = {
   difficulty: number,
   hash: string,
-  loading: boolean,
-  number: number,
+  number: BlockNumber,
   miner: string,
   txns: number,
   timestamp: string,
   transactions: []
+};
+
+type Props = {
+  getBlockNumber: () => BlockNumber,
+  getBlock: (block: BlockNumber, i: number) => Block
 };
 
 type State = {
@@ -38,28 +39,31 @@ class App extends Component<Props, State> {
   }
 
   async initAsyncFlow() {
-    const latestBlockNumber = await this.props.handleGetBlockNumber();
-    await this.getLatestBlocks(latestBlockNumber);
+    const latestBlockNumber = await this.props.getBlockNumber();
+    this.getLatestBlocks(latestBlockNumber);
   }
 
-  getLatestBlocks = async blockNumber => {
-    for (let i = 1; i < 10; i++) {
-      const newBlock: Block = await this.props.handleGetBlock(blockNumber, i);
-      if (newBlock) {
-        this.setState({
-          blocks: [...this.state.blocks, newBlock]
-        });
-      }
+  getLatestBlocks = async (number: BlockNumber) => {
+    for (let i = 0; i < 10; i++) {
+      const newBlock = await this.props.getBlock(number, i);
+      newBlock &&
+        this.setState(prevState => ({
+          blocks: [...prevState.blocks, newBlock]
+        }));
     }
   };
+
+  componentDidCatch() {
+    console.log("App error");
+  }
 
   render() {
     return (
       <CardsContainer>
         <TransitionGroup>
           {this.state.blocks.map((block: Block) => (
-            <Fade timing="100ms">
-              <BlockCard {...block} key={block.hash} />
+            <Fade timing="100ms" timeout={0} key={block.hash}>
+              <BlockCard {...block} />
             </Fade>
           ))}
         </TransitionGroup>
