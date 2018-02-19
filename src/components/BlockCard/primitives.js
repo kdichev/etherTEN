@@ -67,5 +67,5 @@ export const CardContainer = styled.div`
 `;
 
 export const Box = styled.div`
-  ${truncate("350px")};
+  ${truncate("300px")};
 `;

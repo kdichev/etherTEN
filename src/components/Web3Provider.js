@@ -4,23 +4,23 @@ import PropTypes from "prop-types";
 export const withWeb3: Connector = C =>
   class Web3Component extends React.Component {
     static contextTypes = {
-      web3: PropTypes.object.isRequired
+      eth: PropTypes.object.isRequired
     };
 
     getBlockNumber = async () => {
-      const { web3: { eth } } = this.context;
+      const { eth } = this.context;
       try {
         return await eth.getBlockNumber();
       } catch (e) {
-        throw new Error("Failed to fetch Block Number", e);
+        console.dir(e);
+        throw new Error("Failed to fetch Block Number: ");
       }
     };
 
-    getBlock = async (blockNumber, i) => {
-      const { web3: { eth } } = this.context;
+    getBlock = async number => {
+      const { eth } = this.context;
       try {
-        const response = await eth.getBlock(blockNumber - i);
-        //TODO: research why response is null
+        const response = await eth.getBlock(number);
         if (response) {
           const {
             difficulty,
@@ -40,16 +40,21 @@ export const withWeb3: Connector = C =>
           };
         }
       } catch (e) {
-        console.log(e);
-        throw new Error("Failed to fetch Block", e);
+        console.dir(e);
+        throw new Error("Failed to fetch Block");
       }
     };
 
+    componentDidCatch(error, info) {
+      console.log(error, info);
+    }
+
     getTransaction = async hash => {
-      const { web3: { eth } } = this.context;
+      const { eth } = this.context;
       try {
         return await eth.getTransaction(hash);
       } catch (e) {
+        console.dir(e);
         throw new Error("Failed to fetch Block", e);
       }
     };
@@ -66,19 +71,24 @@ export const withWeb3: Connector = C =>
 
 class Web3Provider extends React.Component {
   static propTypes = {
-    web3: PropTypes.object.isRequired
+    eth: PropTypes.object.isRequired
   };
 
   static childContextTypes = {
-    web3: PropTypes.object.isRequired
+    eth: PropTypes.object.isRequired
   };
 
   getChildContext() {
-    const { web3 } = this.props;
+    const { eth } = this.props;
     return {
-      web3
+      eth
     };
   }
+
+  componentDidCatch(error, info) {
+    console.log(error, info);
+  }
+
   render() {
     const { children } = this.props;
     return React.Children.only(children);

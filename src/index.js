@@ -8,7 +8,7 @@ import Web3 from "web3";
 const web3 = new Web3(Web3.givenProvider);
 
 ReactDOM.render(
-  <Web3Provider web3={web3}>
+  <Web3Provider eth={web3.eth}>
     <App />
   </Web3Provider>,
   document.getElementById("root")

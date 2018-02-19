@@ -1,4 +1,5 @@
 // @flow
+import type { CardProps } from "./../types";
 import React from "react";
 import {
   CardHeaderContainer,
@@ -7,19 +8,8 @@ import {
   CardFooter,
   CardContainer,
   Box
-  //Avatar,
-  //Fade
 } from "./primitives";
 import Blockies from "react-blockies";
-//import styled from "styled-components";
-
-type CardProps = {
-  hash: string,
-  number: number,
-  miner: string,
-  timestamp: string,
-  transactions: []
-};
 
 export const BlockCard = (props: CardProps) => (
   <CardContainer>
@@ -30,13 +20,11 @@ export const BlockCard = (props: CardProps) => (
       <CardContent>
         <b>Block</b> <a href={props.hash}>{props.number}</a>
         <br />
-        <Box>Mined By: {props.miner}</Box>
+        <Box title={props.miner}>Mined By: {props.miner}</Box>
         includes <a href={props.hash}>{props.transactions.length}</a>{" "}
         Transactions
       </CardContent>
-      <CardFooter>
-        <span>{props.timestamp} ago</span>
-      </CardFooter>
+      <CardFooter>{props.timestamp} ago</CardFooter>
     </CardHeaderContainer>
   </CardContainer>
 );
