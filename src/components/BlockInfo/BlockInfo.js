@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import styled from "styled-components";
 
 const BlockInfoContainer = styled.div`
@@ -8,7 +8,7 @@ const BlockInfoContainer = styled.div`
 export const BlockInfo = props => (
   <BlockInfoContainer>
     <b>Info:</b> <br />
-    Difficulty: {props.block.difficulty} <br />
-    Gas Used: {props.block.gasUsed} <br />
+    Difficulty: {props.difficulty} <br />
+    Gas Used: {props.gasUsed} <br />
   </BlockInfoContainer>
-)
+);

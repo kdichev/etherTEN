@@ -1,5 +1,4 @@
 // @flow
-
 // Blockchain objects type definitions
 export type BlockNumber = number;
 
@@ -20,11 +19,15 @@ export type AppProps = {
 };
 
 export type AppState = {
-  blocks: Array<Block>
+  blocks: Array<Block>,
+  loading: boolean
 };
 
 // BlockCard.js props type definitions
-export type CardProps = {
+
+export type Card = (props: CardProps) => any;
+
+type CardProps = {
   hash: string,
   number: number,
   miner: string,

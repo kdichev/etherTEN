@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import transition from "styled-transition-group";
 
 export const CardsContainer = styled.div`
@@ -12,6 +12,23 @@ export const Fade = transition.div`
   &:enter { opacity: 0.01; }
   &:enter-active {
     opacity: 1;
-    transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: all 1300ms cubic-bezier(0.4, 0.0, 0.2, 1);
   }
+`;
+
+const rotate360 = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+export const RefreshIcon = styled.div`
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 `;

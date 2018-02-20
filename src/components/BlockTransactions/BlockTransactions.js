@@ -1,9 +1,11 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import Blockies from "react-blockies";
 
 const TransactionsInfoContainer = styled.div`
   overflow: auto;
-  height: 250px;
+  min-height: 0px;
+  max-height: 250px;
 `;
 
 const DialogContent = styled.div`
@@ -38,15 +40,15 @@ const MiniAvatar = styled.img`
 
 export const BlockTransactions = props => (
   <TransactionsInfoContainer loading={props.loading}>
-    <b>Transactions:</b> <br />
-    {props.info &&
+    <b onClick={() => props.onToggle(props.blockHash)}>Transactions:</b> <br />
+    {props.toggle &&
       props.info.map(tInfo => (
         <DialogContent>
-          {/* <MiniAvatar src={`http://tinygraphs.com/squares/${tInfo.from}?theme=seascape&numcolors=4&size=25&fmt=svg`} /> */}
-          <b>From:</b> <Box> {tInfo.from}</Box>
+          <Blockies seed={tInfo.from} scale={2} />
+          <Box>{tInfo.from}</Box>
           <Arrow>&rarr;</Arrow>
-          {/* <MiniAvatar src={`http://tinygraphs.com/squares/${tInfo.to}?theme=seascape&numcolors=4&size=25&fmt=svg`} /> */}
-          <b>To:</b> <Box> {tInfo.to}</Box>
+          <Blockies seed={tInfo.to} scale={2} />
+          <Box>{tInfo.to}</Box>
         </DialogContent>
       ))}
   </TransactionsInfoContainer>
