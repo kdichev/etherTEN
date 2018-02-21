@@ -5,7 +5,7 @@ import { withWeb3 } from "./../Web3Provider";
 import { BlockCard } from "./../BlockCard/BlockCard";
 import { CardsContainer, RefreshIcon } from "./primitives";
 //import { TransitionGroup } from "react-transition-group";
-// import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
+import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
 import { BlockInfo } from "./../BlockInfo/BlockInfo";
 
 class App extends Component<AppProps, AppState> {
@@ -20,7 +20,7 @@ class App extends Component<AppProps, AppState> {
     try {
       const latestBlockNumber = await getBlockNumber();
       await this.getLatestBlocks(latestBlockNumber);
-      //await this.getLatestBlocksInfo();
+      await this.getLatestBlocksInfo();
     } catch (e) {
       console.log(e);
     }
@@ -36,22 +36,32 @@ class App extends Component<AppProps, AppState> {
     }
   };
 
-  getLatestBlocksInfo = async () => {
-    await Promise.all(
-      this.state.blocks.map(async ({ transactions, ...rest }) => {
-        const transactionInfo = await Promise.all(
-          transactions.map(async trx => await this.props.getTransaction(trx))
-        );
-        //await Promise.all(transactionInfo)
-        console.log({ ...rest, transactions, transactionInfo, toggle: false });
-        this.setState(prevState => ({
-          blocks: [
-            ...prevState.blocks,
-            { ...rest, transactions, transactionInfo, toggle: false }
-          ]
-        }));
-      })
-    );
+  getLatestBlocksInfo = () => {
+    this.state.blocks.map(async (block, index) => {
+      const transactionInfo = await Promise.all(
+        block.transactions.map(
+          async trx => await this.props.getTransaction(trx)
+        )
+      );
+      // $FlowFixMe
+      const updatedBlock = {
+        ...block,
+        transactionInfo,
+        toggle: false
+      };
+      this.setState(prevState =>
+        this.updateBlock(prevState, updatedBlock, index)
+      );
+    });
+  };
+
+  updateBlock = (prevState, updatedBlock, index) => {
+    prevState.blocks[index] = {
+      // $FlowFixMe
+      ...prevState.blocks[index],
+      ...updatedBlock
+    };
+    return { ...prevState };
   };
 
   onRefreshClick = () => {
@@ -59,20 +69,18 @@ class App extends Component<AppProps, AppState> {
     this.initAsyncFlow();
   };
 
-  // toggleTransactionInfo = hash => {
-  //   const selected = this.state.blocks.find(
-  //     block =>
-  //       block.hash === hash && {
-  //         ...block,
-  //         toggle: !block.togle
-  //       }
-  //   );
-  //   this.setState(prevState => ({
-  //     blocks: prevState.blocks.map(
-  //       block => (block.hash === selected.hash ? selected : block)
-  //     )
-  //   }));
-  // };
+  toggleTransactionInfo = hash => {
+    const selected = this.state.blocks.find(block => block.hash === hash);
+    // $FlowFixMe
+    selected.toggle = !selected.toggle;
+    this.setState(prevState => ({
+      // $FlowFixMe
+      blocks: prevState.blocks.map(
+        // $FlowFixMe
+        block => (block.hash === selected.hash ? selected : block)
+      )
+    }));
+  };
 
   componentDidCatch(error, info) {
     console.log(error, info);
@@ -86,12 +94,12 @@ class App extends Component<AppProps, AppState> {
         {blocks.map((block: Block) => (
           <BlockCard {...block}>
             <BlockInfo {...block} />
-            {/* <BlockTransactions
+            <BlockTransactions
               blockHash={block.hash}
-              toggle={true}
+              toggle={block.toggle}
               info={block.transactionInfo ? block.transactionInfo : []}
               onToggle={this.toggleTransactionInfo}
-            /> */}
+            />
           </BlockCard>
         ))}
       </CardsContainer>

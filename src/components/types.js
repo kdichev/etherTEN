@@ -9,7 +9,9 @@ export type Block = {
   txns: number,
   timestamp: string,
   transactions: [],
-  difficulty: number
+  transactionsInfo: [],
+  difficulty: number,
+  toggle: boolean
 };
 
 // App.js props and state type definitions
