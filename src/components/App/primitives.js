@@ -16,16 +16,6 @@ export const Fade = transition.div`
   }
 `;
 
-const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-`;
-
 export const RefreshIcon = styled.div`
   font-size: 16px;
   width: 16px;

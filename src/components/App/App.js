@@ -9,7 +9,7 @@ import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
 import { BlockInfo } from "./../BlockInfo/BlockInfo";
 
 class App extends Component<AppProps, AppState> {
-  state = { blocks: [], loading: false };
+  state = { blocks: [] };
 
   componentDidMount() {
     this.initAsyncFlow();
@@ -38,7 +38,7 @@ class App extends Component<AppProps, AppState> {
   };
 
   getLatestBlocksInfo = async () => {
-    const transactionsInfo = await Promise.all(
+    await Promise.all(
       this.state.blocks.map(async ({ transactions, ...rest }) => {
         const transactionInfo = await Promise.all(
           transactions.map(async trx => await this.props.getTransaction(trx))
@@ -82,7 +82,7 @@ class App extends Component<AppProps, AppState> {
   }
 
   render() {
-    const { blocks, loading } = this.state;
+    const { blocks } = this.state;
     console.log(this.state.blocks);
     return (
       <CardsContainer>

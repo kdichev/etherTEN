@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import Blockies from "react-blockies";
 
 const TransactionsInfoContainer = styled.div`
@@ -30,12 +30,6 @@ const Box = styled.div`
 
 const Arrow = styled.div`
   flex: 1;
-`;
-
-const MiniAvatar = styled.img`
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
 `;
 
 export const BlockTransactions = props => (
