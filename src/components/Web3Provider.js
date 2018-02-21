@@ -80,6 +80,9 @@ class Web3Provider extends React.Component {
 
   getChildContext() {
     const { eth } = this.props;
+    if (!eth) {
+      throw new Error("No Web3 Provider");
+    }
     return {
       eth
     };

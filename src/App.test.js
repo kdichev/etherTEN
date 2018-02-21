@@ -12,6 +12,7 @@ const MockResponse = {
   toggle: false,
   transactions: []
 };
+
 const MockEth = {
   getBlockNumber: () => setTimeout(() => 123, 2000),
   getBlock: () => setTimeout(() => MockResponse, 2000)
