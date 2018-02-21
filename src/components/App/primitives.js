@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import transition from "styled-transition-group";
 
 export const CardsContainer = styled.div`
