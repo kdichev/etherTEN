@@ -3,8 +3,8 @@ import type { BlockNumber, Block, AppProps, AppState } from "./../types";
 import React, { Component } from "react";
 import { withWeb3 } from "./../Web3Provider";
 import { BlockCard } from "./../BlockCard/BlockCard";
-import { CardsContainer, Fade, RefreshIcon } from "./primitives";
-import { TransitionGroup } from "react-transition-group";
+import { CardsContainer, RefreshIcon } from "./primitives";
+//import { TransitionGroup } from "react-transition-group";
 import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
 import { BlockInfo } from "./../BlockInfo/BlockInfo";
 
@@ -83,25 +83,20 @@ class App extends Component<AppProps, AppState> {
 
   render() {
     const { blocks } = this.state;
-    console.log(this.state.blocks);
     return (
       <CardsContainer>
         <RefreshIcon onClick={this.onRefreshClick}>⟳</RefreshIcon>
-        <TransitionGroup>
-          {blocks.map((block: Block) => (
-            <Fade timeout={0} key={block.hash}>
-              <BlockCard {...block}>
-                <BlockInfo {...block} />
-                <BlockTransactions
-                  blockHash={block.hash}
-                  toggle={true}
-                  info={block.transactionInfo ? block.transactionInfo : []}
-                  onToggle={this.toggleTransactionInfo}
-                />
-              </BlockCard>
-            </Fade>
-          ))}
-        </TransitionGroup>
+        {blocks.map((block: Block) => (
+          <BlockCard {...block}>
+            <BlockInfo {...block} />
+            {/* <BlockTransactions
+              blockHash={block.hash}
+              toggle={true}
+              info={block.transactionInfo ? block.transactionInfo : []}
+              onToggle={this.toggleTransactionInfo}
+            /> */}
+          </BlockCard>
+        ))}
       </CardsContainer>
     );
   }

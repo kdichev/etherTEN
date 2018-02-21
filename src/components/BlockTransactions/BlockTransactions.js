@@ -38,10 +38,10 @@ export const BlockTransactions = props => (
     {props.toggle &&
       props.info.map(tInfo => (
         <DialogContent>
-          <Blockies seed={tInfo.from} scale={2} />
+          {/* <Blockies seed={tInfo.from} scale={2} /> */}
           <Box>{tInfo.from}</Box>
           <Arrow>&rarr;</Arrow>
-          <Blockies seed={tInfo.to} scale={2} />
+          {/* <Blockies seed={tInfo.to} scale={2} /> */}
           <Box>{tInfo.to}</Box>
         </DialogContent>
       ))}
