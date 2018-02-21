@@ -15,12 +15,12 @@ export type Block = {
 // App.js props and state type definitions
 export type AppProps = {
   getBlockNumber: () => BlockNumber,
-  getBlock: (number: BlockNumber) => Block
+  getBlock: (number: BlockNumber) => Block,
+  getTransaction: (hash: string) => void
 };
 
 export type AppState = {
-  blocks: Array<Block>,
-  loading: boolean
+  blocks: Array<Block>
 };
 
 // BlockCard.js props type definitions
@@ -32,5 +32,6 @@ type CardProps = {
   number: number,
   miner: string,
   timestamp: string,
-  transactions: []
+  transactions: [],
+  children: any
 };
