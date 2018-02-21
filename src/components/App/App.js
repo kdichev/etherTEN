@@ -20,10 +20,9 @@ class App extends Component<AppProps, AppState> {
     try {
       const latestBlockNumber = await getBlockNumber();
       await this.getLatestBlocks(latestBlockNumber);
-      await this.getLatestBlocksInfo();
+      //await this.getLatestBlocksInfo();
     } catch (e) {
-      console.log("Error: ", e);
-      console.dir(e);
+      console.log(e);
     }
   };
 
@@ -60,22 +59,20 @@ class App extends Component<AppProps, AppState> {
     this.initAsyncFlow();
   };
 
-  toggleTransactionInfo = hash => {
-    console.log(hash);
-    const selected = this.state.blocks.find(
-      block =>
-        block.hash === hash && {
-          ...block,
-          toggle: !block.togle
-        }
-    );
-    console.log(selected);
-    this.setState(prevState => ({
-      blocks: prevState.blocks.map(
-        block => (block.hash === selected.hash ? selected : block)
-      )
-    }));
-  };
+  // toggleTransactionInfo = hash => {
+  //   const selected = this.state.blocks.find(
+  //     block =>
+  //       block.hash === hash && {
+  //         ...block,
+  //         toggle: !block.togle
+  //       }
+  //   );
+  //   this.setState(prevState => ({
+  //     blocks: prevState.blocks.map(
+  //       block => (block.hash === selected.hash ? selected : block)
+  //     )
+  //   }));
+  // };
 
   componentDidCatch(error, info) {
     console.log(error, info);

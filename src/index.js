@@ -15,7 +15,7 @@ injectGlobal`
 `;
 
 ReactDOM.render(
-  <Web3Provider>
+  <Web3Provider eth={web3.eth}>
     <App />
   </Web3Provider>,
   document.getElementById("root")
