@@ -9,12 +9,15 @@ import {
   CardContainer,
   Box
 } from "./primitives";
-//import Blockies from "react-blockies";
+// $FlowFixMe
+import Blockies from "react-blockies";
 
 export const BlockCard: Card = props => (
   <CardContainer>
     <CardHeaderContainer>
-      <CardHeader>{/* <Blockies seed={props.hash} scale={7} /> */}</CardHeader>
+      <CardHeader>
+        <Blockies seed={props.hash} scale={7} />
+      </CardHeader>
       <CardContent>
         <b>Block</b> <a href={props.hash}>{props.number}</a>
         <br />

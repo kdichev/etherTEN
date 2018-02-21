@@ -4,7 +4,6 @@ import React, { Component } from "react";
 import { withWeb3 } from "./../Web3Provider";
 import { BlockCard } from "./../BlockCard/BlockCard";
 import { CardsContainer, RefreshIcon } from "./primitives";
-//import { TransitionGroup } from "react-transition-group";
 import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
 import { BlockInfo } from "./../BlockInfo/BlockInfo";
 
@@ -43,21 +42,22 @@ class App extends Component<AppProps, AppState> {
           async trx => await this.props.getTransaction(trx)
         )
       );
-      // $FlowFixMe
-      const updatedBlock = {
-        ...block,
-        transactionInfo,
-        toggle: false
-      };
       this.setState(prevState =>
-        this.updateBlock(prevState, updatedBlock, index)
+        this.updateBlock(
+          prevState,
+          {
+            ...block,
+            transactionInfo,
+            toggle: false
+          },
+          index
+        )
       );
     });
   };
 
   updateBlock = (prevState, updatedBlock, index) => {
     prevState.blocks[index] = {
-      // $FlowFixMe
       ...prevState.blocks[index],
       ...updatedBlock
     };
@@ -69,25 +69,25 @@ class App extends Component<AppProps, AppState> {
     this.initAsyncFlow();
   };
 
-  toggleTransactionInfo = hash => {
-    const selected = this.state.blocks.find(block => block.hash === hash);
-    // $FlowFixMe
-    selected.toggle = !selected.toggle;
-    this.setState(prevState => ({
-      // $FlowFixMe
-      blocks: prevState.blocks.map(
-        // $FlowFixMe
-        block => (block.hash === selected.hash ? selected : block)
-      )
-    }));
+  toggleTransactionInfo = (hash: string) => {
+    const selected = this.state.blocks.find(
+      (block: Block) => block.hash === hash
+    );
+    if (selected) {
+      this.setState(prevState => ({
+        blocks: prevState.blocks.map(
+          block =>
+            block.hash === selected.hash
+              ? { ...selected, toggle: !selected.toggle }
+              : block
+        )
+      }));
+    }
   };
-
-  componentDidCatch(error, info) {
-    console.log(error, info);
-  }
 
   render() {
     const { blocks } = this.state;
+    console.log(blocks);
     return (
       <CardsContainer>
         <RefreshIcon onClick={this.onRefreshClick}>⟳</RefreshIcon>
