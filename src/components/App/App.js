@@ -5,7 +5,7 @@ import { withWeb3 } from "./../Web3Provider";
 import { BlockCard } from "./../BlockCard/BlockCard";
 import { CardsContainer, RefreshIcon } from "./primitives";
 //import { TransitionGroup } from "react-transition-group";
-import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
+// import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
 import { BlockInfo } from "./../BlockInfo/BlockInfo";
 
 class App extends Component<AppProps, AppState> {
