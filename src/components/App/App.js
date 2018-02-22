@@ -1,7 +1,5 @@
 // @flow
 import type {
-  BlockNumber,
-  Block,
   AppProps,
   AppState,
   updateBlockByIndex,
