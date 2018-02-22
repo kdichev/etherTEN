@@ -78,7 +78,7 @@ class Web3Provider extends React.Component<{ eth: {}, children: Node }, {}> {
   };
 
   static childContextTypes = {
-    eth: PropTypes.object.isRequired,
+    eth: PropTypes.object.isRequireds,
     connected: PropTypes.bool.isRequired
   };
 
@@ -90,8 +90,7 @@ class Web3Provider extends React.Component<{ eth: {}, children: Node }, {}> {
       };
     }
     return {
-      ...eth,
-      connected: true
+      eth
     };
   }
 
