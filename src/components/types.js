@@ -25,7 +25,8 @@ export type AppProps = {
 };
 
 export type AppState = {
-  blocks: Array<Block>
+  blocks: Array<Block>,
+  error: boolean
 };
 
 // BlockCard.js props type definitions
@@ -57,7 +58,7 @@ export type updateBlockByIndex = (
   index: number
 ) => AppState;
 
-export type AddBlock = (prevState: AppState, newBlock: Block) => AppState;
+export type AddBlock = (prevState: AppState, newBlock: Block) => {};
 export type Connector = (C: ComponentType<any>) => ComponentType<any>;
 
 export type Transactions = (props: {

@@ -26,7 +26,7 @@ export const addBlock: AddBlock = (prevState, newBlock) => ({
 });
 
 class App extends Component<AppProps, AppState> {
-  state = { blocks: [] };
+  state = { blocks: [], error: false };
 
   componentDidMount() {
     this.initAsyncFlow();
@@ -39,7 +39,7 @@ class App extends Component<AppProps, AppState> {
       await this.getLatestBlocks(latestBlockNumber);
       this.getLatestBlocksInfo();
     } catch (e) {
-      console.log("error:");
+      this.setState({ error: true });
     }
   };
 
@@ -77,7 +77,7 @@ class App extends Component<AppProps, AppState> {
   };
 
   render() {
-    const { blocks } = this.state;
+    const { blocks, error } = this.state;
     return (
       <CardsContainer>
         <RefreshIcon onClick={this.onRefreshClick}>⟳</RefreshIcon>
@@ -93,6 +93,7 @@ class App extends Component<AppProps, AppState> {
             />
           </BlockCard>
         ))}
+        {error && "Error no Provider set!!!"}
       </CardsContainer>
     );
   }
