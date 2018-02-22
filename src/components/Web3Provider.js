@@ -2,7 +2,7 @@
 import React from "react";
 // $FlowFixMe
 import PropTypes from "prop-types";
-import type { AppProps, AppState, Connector } from "./types";
+import type { AppProps, Connector } from "./types";
 
 export const withWeb3: Connector = C =>
   class Web3Component extends React.Component<AppProps> {

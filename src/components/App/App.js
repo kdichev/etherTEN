@@ -3,8 +3,7 @@ import type {
   AppProps,
   AppState,
   updateBlockByIndex,
-  AddBlock,
-  Hash
+  AddBlock
 } from "./../types";
 import React, { Component } from "react";
 import { withWeb3 } from "./../Web3Provider";

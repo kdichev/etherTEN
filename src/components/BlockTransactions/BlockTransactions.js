@@ -6,10 +6,9 @@ import type { Transactions } from "./../types";
 import {
   TransactionsInfoContainer,
   DialogContent,
-  truncate,
   Box,
   Arrow
-} from "./../types";
+} from "./primitives";
 
 export const BlockTransactions: Transactions = props => (
   <TransactionsInfoContainer loading={props.loading}>

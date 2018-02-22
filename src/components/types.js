@@ -1,10 +1,5 @@
 // @flow
-import type {
-  ComponentType,
-  Node,
-  Element,
-  StatelessFunctionalComponent
-} from "react";
+import type { ComponentType } from "react";
 
 // Blockchain objects type definitions
 export type BlockNumber = number;
@@ -35,8 +30,6 @@ export type AppState = {
 
 // BlockCard.js props type definitions
 
-export type Card = (props: CardProps) => any;
-
 type CardProps = {
   hash: Hash,
   number: BlockNumber,
@@ -46,11 +39,7 @@ type CardProps = {
   children: any
 };
 
-export type updateBlockByIndex = (
-  prevState: AppState,
-  updatedValues: updatePayloads,
-  index: number
-) => AppState;
+export type Card = (props: CardProps) => any;
 
 type togglePayload = {
   toggle: boolean
@@ -61,6 +50,12 @@ type infoPayload = {
 };
 
 type updatePayloads = togglePayload | infoPayload;
+
+export type updateBlockByIndex = (
+  prevState: AppState,
+  updatedValues: updatePayloads,
+  index: number
+) => AppState;
 
 export type AddBlock = (prevState: AppState, newBlock: Block) => AppState;
 export type Connector = (C: ComponentType<any>) => ComponentType<any>;
