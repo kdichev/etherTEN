@@ -1,46 +1,35 @@
-import React from 'react'
+// @flow
+import type { Card } from "./../types";
+import React from "react";
 import {
   CardHeaderContainer,
   CardHeader,
   CardContent,
   CardFooter,
-  Avatar,
-  CardContainer
+  CardContainer,
+  Box
 } from "./primitives";
-import styled from 'styled-components'
+// $FlowFixMe
+import Blockies from "react-blockies";
 
-function truncate(width) {
-  return `
-    width: ${width};
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  `;
-}
-
-// Make this div truncate the text with an ellipsis
-const Box = styled.div`
-  ${ truncate('350px') }
-`;
-
-export const BlockCard = (props) => (
+export const BlockCard: Card = props => (
   <CardContainer>
     <CardHeaderContainer>
       <CardHeader>
-        <Avatar src={`http://tinygraphs.com/squares/${props.hash}?theme=seascape&numcolors=4&size=220&fmt=svg`} loading={props.loading}/>
+        <Blockies seed={props.hash} scale={7} />
       </CardHeader>
       <CardContent>
         <b>Block</b> <a href={props.hash}>{props.number}</a>
         <br />
-        <Box>Mined By: {props.miner}</Box>
-        includes <a href={props.hash}>{props.txns}</a> Transactions
+        <Box title={props.miner}>Mined By: {props.miner}</Box>
+        includes{" "}
+        <a href={props.hash}>
+          {props.transactions && props.transactions.length}
+        </a>{" "}
+        Transactions
       </CardContent>
-      <CardFooter>
-        <span>
-          {props.timestamp} seconds ago
-        </span>
-      </CardFooter>
+      <CardFooter>{props.timestamp} ago</CardFooter>
     </CardHeaderContainer>
     {props.children}
   </CardContainer>
-)
+);

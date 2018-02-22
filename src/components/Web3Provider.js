@@ -1,69 +1,101 @@
-import React, { Component, Children } from 'react'
-import PropTypes from 'prop-types'
+import React from "react";
+import PropTypes from "prop-types";
 
-export const withWeb3 = C =>
-  class Web3Component extends Component {
+export const withWeb3: Connector = C =>
+  class Web3Component extends React.Component {
     static contextTypes = {
-      web3: PropTypes.object.isRequired
+      eth: PropTypes.object.isRequired
+    };
+
+    getBlockNumber = async () => {
+      const { eth } = this.context;
+      try {
+        return await eth.getBlockNumber();
+      } catch (e) {
+        console.dir(e);
+        throw new Error("Failed to fetch Block Number: ");
+      }
+    };
+
+    getBlock = async number => {
+      const { eth } = this.context;
+      try {
+        const response = await eth.getBlock(number);
+        if (response) {
+          const {
+            difficulty,
+            transactions,
+            number,
+            timestamp,
+            miner,
+            hash
+          } = response;
+          return {
+            difficulty,
+            transactions,
+            number,
+            timestamp,
+            miner,
+            hash
+          };
+        }
+      } catch (e) {
+        console.dir(e);
+        throw new Error("Failed to fetch Block");
+      }
+    };
+
+    componentDidCatch(error, info) {
+      console.log(error, info);
     }
 
-    handleGetBlockNumber = async () => {
-      const { web3: { eth } } = this.context
+    getTransaction = async hash => {
+      const { eth } = this.context;
       try {
-        return await eth.getBlockNumber()
+        return await eth.getTransaction(hash);
       } catch (e) {
-        throw new Error('Failed to fetch Block Number', e)
+        console.dir(e);
+        throw new Error("Failed to fetch Block", e);
       }
-    }
-
-    handleGetBlock = async (blockNumber, i) => {
-      const { web3: { eth } } = this.context
-      try {
-        return await eth.getBlock(blockNumber - i)
-      } catch (e) {
-        throw new Error('Failed to fetch Block', e)
-      }
-    }
-
-    handleGetTransaction = async hash => {
-      const { web3: { eth } } = this.context
-      try {
-        return await eth.getTransaction(hash)
-      } catch (e) {
-        throw new Error('Failed to fetch Block', e)
-      }
-    }
+    };
 
     render() {
-      const { web3 } = this.context
       const methods = {
-        web3,
-        handleGetBlock: this.handleGetBlock,
-        handleGetBlockNumber: this.handleGetBlockNumber,
-        handleGetTransaction: this.handleGetTransaction
-      }
-      return <C {...this.props} {...methods} />
+        getBlock: this.getBlock,
+        getBlockNumber: this.getBlockNumber,
+        getTransaction: this.getTransaction
+      };
+      return <C {...this.props} {...methods} />;
     }
-  }
+  };
 
-class Web3Provider extends Component {
+class Web3Provider extends React.Component {
   static propTypes = {
-    web3: PropTypes.object.isRequired
-  }
+    eth: PropTypes.object.isRequired
+  };
 
   static childContextTypes = {
-    web3: PropTypes.object.isRequired
-  }
+    eth: PropTypes.object.isRequired
+  };
 
   getChildContext() {
-    const { web3 } = this.props
-    return {
-      web3
+    const { eth } = this.props;
+    if (!eth) {
+      throw new Error("No Web3 Provider");
     }
+    return {
+      eth
+    };
   }
+
+  componentDidCatch(error, info) {
+    console.log(error, info);
+  }
+
   render() {
-    return Children.only(this.props.children)
+    const { children } = this.props;
+    return React.Children.only(children);
   }
 }
 
-export default Web3Provider
+export default Web3Provider;

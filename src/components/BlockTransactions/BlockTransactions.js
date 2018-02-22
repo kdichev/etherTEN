@@ -1,10 +1,11 @@
 import React from "react";
-import styled, {css} from "styled-components";
+import styled from "styled-components";
+import Blockies from "react-blockies";
 
 const TransactionsInfoContainer = styled.div`
-  transition: height 200ms linear;
   overflow: auto;
-  height: ${props => props.loading ? "200px" : '0px'};
+  min-height: 0px;
+  max-height: 250px;
 `;
 
 const DialogContent = styled.div`
@@ -24,34 +25,32 @@ function truncate(width) {
 
 // Make this div truncate the text with an ellipsis
 const Box = styled.div`
-  ${ truncate('110px') }
-  flex: 6;
+  ${truncate("110px")} flex: 6;
 `;
 
 const Arrow = styled.div`
   flex: 1;
-`
+`;
 
-const MiniAvatar = styled.img`
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-`
-
-export const  BlockTransactions = props => (
+export const BlockTransactions = props => (
   <TransactionsInfoContainer loading={props.loading}>
-    <b>Transactions:</b> <br />
-    {props.info.map(item =>
-      props.blockHash === item.blockHash && 
-        item.transactionsInfo.map(tInfo =>
-          <DialogContent>
-            {/* <MiniAvatar src={`http://tinygraphs.com/squares/${tInfo.from}?theme=seascape&numcolors=4&size=25&fmt=svg`} /> */}
-            <b>From:</b> <Box> {tInfo.from}</Box>
-            <Arrow>&rarr;</Arrow>
-            {/* <MiniAvatar src={`http://tinygraphs.com/squares/${tInfo.to}?theme=seascape&numcolors=4&size=25&fmt=svg`} /> */}
-            <b>To:</b> <Box> {tInfo.to}</Box>
-          </DialogContent>
-        )
-    )}
+    <b
+      onClick={() =>
+        props.onToggle(props.blockHash, props.blockIndex, props.toggle)
+      }
+    >
+      Transactions:
+    </b>{" "}
+    <br />
+    {props.toggle &&
+      props.info.map(tInfo => (
+        <DialogContent>
+          <Blockies seed={tInfo.from} scale={2} />
+          <Box>{tInfo.from}</Box>
+          <Arrow>&rarr;</Arrow>
+          <Blockies seed={tInfo.to} scale={2} />
+          <Box>{tInfo.to}</Box>
+        </DialogContent>
+      ))}
   </TransactionsInfoContainer>
 );
