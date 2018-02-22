@@ -3,7 +3,8 @@ import type {
   AppProps,
   AppState,
   updateBlockByIndex,
-  AddBlock
+  AddBlock,
+  Hash
 } from "./../types";
 import React, { Component } from "react";
 import { withWeb3 } from "./../Web3Provider";
@@ -12,12 +13,16 @@ import { CardsContainer, RefreshIcon } from "./primitives";
 import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
 import { BlockInfo } from "./../BlockInfo/BlockInfo";
 
-const updateBlock: updateBlockByIndex = (prevState, updatedBlock, index) => {
+export const updateBlock: updateBlockByIndex = (
+  prevState,
+  updatedBlock,
+  index
+) => {
   prevState.blocks[index] = { ...prevState.blocks[index], ...updatedBlock };
   return { ...prevState };
 };
 
-const addBlock: AddBlock = (prevState, newBlock) => ({
+export const addBlock: AddBlock = (prevState, newBlock) => ({
   blocks: [...prevState.blocks, newBlock]
 });
 
@@ -74,7 +79,6 @@ class App extends Component<AppProps, AppState> {
 
   render() {
     const { blocks } = this.state;
-    console.log(blocks);
     return (
       <CardsContainer>
         <RefreshIcon onClick={this.onRefreshClick}>⟳</RefreshIcon>

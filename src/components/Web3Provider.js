@@ -1,8 +1,11 @@
+// @flow
 import React from "react";
+// $FlowFixMe
 import PropTypes from "prop-types";
+import type { AppProps, AppState, Connector } from "./types";
 
 export const withWeb3: Connector = C =>
-  class Web3Component extends React.Component {
+  class Web3Component extends React.Component<AppProps> {
     static contextTypes = {
       eth: PropTypes.object.isRequired
     };
@@ -13,7 +16,7 @@ export const withWeb3: Connector = C =>
         return await eth.getBlockNumber();
       } catch (e) {
         console.dir(e);
-        throw new Error("Failed to fetch Block Number: ");
+        throw new Error("Failed to fetch Block Number:");
       }
     };
 
@@ -55,7 +58,7 @@ export const withWeb3: Connector = C =>
         return await eth.getTransaction(hash);
       } catch (e) {
         console.dir(e);
-        throw new Error("Failed to fetch Block", e);
+        throw new Error("Failed to fetch Block");
       }
     };
 
@@ -69,7 +72,7 @@ export const withWeb3: Connector = C =>
     }
   };
 
-class Web3Provider extends React.Component {
+class Web3Provider extends React.Component<{ eth: {}, children: Node }, {}> {
   static propTypes = {
     eth: PropTypes.object.isRequired
   };
@@ -86,10 +89,6 @@ class Web3Provider extends React.Component {
     return {
       eth
     };
-  }
-
-  componentDidCatch(error, info) {
-    console.log(error, info);
   }
 
   render() {

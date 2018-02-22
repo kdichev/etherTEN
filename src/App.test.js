@@ -1,3 +1,4 @@
+// @flow
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App/App";
@@ -5,6 +6,8 @@ import Provider from "./components/Web3Provider";
 import { BlockCard } from "./components/BlockCard/BlockCard";
 import { shallow, configure, mount } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
+import { updateBlock, addBlock } from "./components/App/App";
+
 configure({ adapter: new Adapter() });
 
 const mockBlock = [
@@ -23,7 +26,7 @@ const MockEth = {
   getBlock: () => setTimeout(() => null, 2000)
 };
 
-it.only("renders App without crashing if Web3 Eth is provided", () => {
+it("renders App without crashing if Web3 Eth is provided", () => {
   const div = document.createElement("div");
   ReactDOM.render(
     <Provider eth={MockEth}>
@@ -34,13 +37,27 @@ it.only("renders App without crashing if Web3 Eth is provided", () => {
   ReactDOM.unmountComponentAtNode(div);
 });
 
-// it("renders App without crashing if Web3 Eth is not provided", () => {
-//   const div = document.createElement("div");
-//   ReactDOM.render(
-//     <Provider>
-//       <App />
-//     </Provider>,
-//     div
-//   );
-//   ReactDOM.unmountComponentAtNode(div);
-// });
+it("renders App without crashing if Web3 Eth is not provided", () => {
+  const div = document.createElement("div");
+  ReactDOM.render(
+    <Provider>
+      <App />
+    </Provider>,
+    div
+  );
+  ReactDOM.unmountComponentAtNode(div);
+});
+
+it("updates 'block' with values", () => {
+  const state = { blocks: [{}, {}, {}, {}, {}] };
+  const result = updateBlock(state, { toggle: true }, 0);
+  const expected = { blocks: [{ toggle: true }, {}, {}, {}, {}] };
+  expect(result).toEqual(expected);
+});
+
+it("adds new 'block' to 'blocks'", () => {
+  const state = { blocks: [{}] };
+  const result = addBlock(state, mockBlock);
+  const expected = { blocks: [{}, mockBlock] };
+  expect(result).toEqual(expected);
+});

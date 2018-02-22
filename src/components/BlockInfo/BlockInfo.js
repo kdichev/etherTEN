@@ -1,11 +1,10 @@
+// @flow
 import React from "react";
-import styled from "styled-components";
+// $FlowFixMe
+import { Info } from "./../types";
+import { BlockInfoContainer } from "./primitives";
 
-const BlockInfoContainer = styled.div`
-  margin-top: 10px;
-`;
-
-export const BlockInfo = props => (
+export const BlockInfo: Info = props => (
   <BlockInfoContainer>
     <b>Info:</b> <br />
     Difficulty: {props.difficulty} <br />
