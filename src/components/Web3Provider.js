@@ -78,16 +78,20 @@ class Web3Provider extends React.Component<{ eth: {}, children: Node }, {}> {
   };
 
   static childContextTypes = {
-    eth: PropTypes.object.isRequired
+    eth: PropTypes.object.isRequired,
+    connected: PropTypes.bool.isRequired
   };
 
   getChildContext() {
     const { eth } = this.props;
     if (!eth) {
-      throw new Error("No Web3 Provider");
+      return {
+        connected: false
+      };
     }
     return {
-      eth
+      ...eth,
+      connected: true
     };
   }
 
