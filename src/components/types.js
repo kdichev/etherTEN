@@ -8,7 +8,7 @@ export type Block = {
   miner: string,
   txns: number,
   timestamp: string,
-  transactions: [],
+  transactions: Array<string>,
   transactionsInfo: [],
   difficulty: number,
   toggle: boolean
@@ -37,3 +37,21 @@ type CardProps = {
   transactions: [],
   children: any
 };
+
+export type updateBlockByIndex = (
+  prevState: AppState,
+  updatedValues: updatePayloads,
+  index: number
+) => AppState;
+
+type togglePayload = {
+  toggle: boolean
+};
+
+type infoPayload = {
+  transactionInfo: Array<any>
+};
+
+type updatePayloads = togglePayload | infoPayload;
+
+export type AddBlock = (prevState: AppState, newBlock: Block) => AppState;

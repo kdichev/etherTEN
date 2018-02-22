@@ -34,7 +34,14 @@ const Arrow = styled.div`
 
 export const BlockTransactions = props => (
   <TransactionsInfoContainer loading={props.loading}>
-    <b onClick={() => props.onToggle(props.blockHash)}>Transactions:</b> <br />
+    <b
+      onClick={() =>
+        props.onToggle(props.blockHash, props.blockIndex, props.toggle)
+      }
+    >
+      Transactions:
+    </b>{" "}
+    <br />
     {props.toggle &&
       props.info.map(tInfo => (
         <DialogContent>
