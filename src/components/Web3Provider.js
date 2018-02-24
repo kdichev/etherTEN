@@ -7,7 +7,8 @@ import type { AppProps, Connector } from "./types";
 export const withWeb3: Connector = C =>
   class Web3Component extends React.Component<AppProps> {
     static contextTypes = {
-      eth: PropTypes.object.isRequired
+      eth: PropTypes.object.isRequired,
+      connected: PropTypes.bool.isRequired
     };
 
     getBlockNumber = async () => {
