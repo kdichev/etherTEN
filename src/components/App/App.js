@@ -8,7 +8,7 @@ import type {
 import React, { Component } from "react";
 import { withWeb3 } from "./../Web3Provider";
 import { BlockCard } from "./../BlockCard/BlockCard";
-import { AppContainer, RefreshIcon, Title, SubTitle } from "./primitives";
+import { AppContainer, Title, SubTitle } from "./primitives";
 import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
 import { BlockInfo } from "./../BlockInfo/BlockInfo";
 // $FlowFixMe

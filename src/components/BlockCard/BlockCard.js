@@ -7,7 +7,6 @@ import {
   CardFooter,
   CardContainer
 } from "./primitives";
-import Loader from "./../Loader";
 
 export const BlockCard: Card = props => (
   <CardContainer>
