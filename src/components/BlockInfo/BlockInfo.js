@@ -1,13 +1,15 @@
 // @flow
 import React from "react";
-// $FlowFixMe
-import { Info } from "./../types";
+import type { Info } from "./../types";
 import { BlockInfoContainer } from "./primitives";
 
 export const BlockInfo: Info = props => (
   <BlockInfoContainer>
-    <b>Info:</b> <br />
-    Difficulty: {props.difficulty} <br />
-    Gas Used: {props.gasUsed} <br />
+    <b>Mined By: </b>
+    {props.miner} <br />
+    <b>Difficulty: </b>
+    {props.difficulty} <br />
+    <b>Gas Used: </b>
+    {props.gasUsed} <br />
   </BlockInfoContainer>
 );

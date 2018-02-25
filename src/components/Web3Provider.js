@@ -32,7 +32,8 @@ export const withWeb3: Connector = C =>
             number,
             timestamp,
             miner,
-            hash
+            hash,
+            gasUsed
           } = response;
           return {
             difficulty,
@@ -40,7 +41,8 @@ export const withWeb3: Connector = C =>
             number,
             timestamp,
             miner,
-            hash
+            hash,
+            gasUsed
           };
         }
       } catch (e) {
@@ -73,7 +75,7 @@ export const withWeb3: Connector = C =>
     }
   };
 
-class Web3Provider extends React.Component<{ eth: {}, children: Node }, {}> {
+class Web3Provider extends React.Component<{ eth: AppProps, children: Node }> {
   static propTypes = {
     eth: PropTypes.object.isRequired
   };

@@ -8,16 +8,24 @@ import type {
 import React, { Component } from "react";
 import { withWeb3 } from "./../Web3Provider";
 import { BlockCard } from "./../BlockCard/BlockCard";
-import { CardsContainer, RefreshIcon } from "./primitives";
+import { AppContainer, RefreshIcon, Title, SubTitle } from "./primitives";
 import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
 import { BlockInfo } from "./../BlockInfo/BlockInfo";
+// $FlowFixMe
+import Blockies from "react-blockies";
+// $FlowFixMe
+import moment from "moment";
 
 export const updateBlock: updateBlockByIndex = (
   prevState,
   updatedBlock,
-  index
+  hash
 ) => {
-  prevState.blocks[index] = { ...prevState.blocks[index], ...updatedBlock };
+  const blockIndex = prevState.blocks.findIndex(block => block.hash === hash);
+  prevState.blocks[blockIndex] = {
+    ...prevState.blocks[blockIndex],
+    ...updatedBlock
+  };
   return { ...prevState };
 };
 
@@ -25,8 +33,59 @@ export const addBlock: AddBlock = (prevState, newBlock) => ({
   blocks: [...prevState.blocks, newBlock]
 });
 
+const Link = props => {
+  return (
+    <a
+      href={props.href}
+      onClick={e => {
+        e.preventDefault();
+      }}
+    >
+      {props.children}
+    </a>
+  );
+};
+
+class PureComponent extends React.Component<{ render: any }> {
+  shouldComponentUpdate() {
+    return false;
+  }
+  render() {
+    return this.props.render;
+  }
+}
+
+const BlockTitle = (props: {
+  onClick?: () => void,
+  number: number,
+  hash: string
+}) => (
+  <Title>
+    Block
+    <Link href={props.hash} onClick={props.onClick}>
+      {props.number}
+    </Link>
+  </Title>
+);
+
+const BlockSubTitle = (props: {
+  onClick?: () => void,
+  transactions: [],
+  infoLoading?: boolean,
+  hash: string
+}) => (
+  <SubTitle>
+    includes{" "}
+    <Link href={props.hash} onClick={props.onClick}>
+      {props.transactions.length}
+    </Link>{" "}
+    trx <br />
+    {props.infoLoading && "Loading Transactions..."}
+  </SubTitle>
+);
+
 class App extends Component<AppProps, AppState> {
-  state = { blocks: [], error: false };
+  state = { blocks: [] };
 
   componentDidMount() {
     this.initAsyncFlow();
@@ -39,7 +98,7 @@ class App extends Component<AppProps, AppState> {
       await this.getLatestBlocks(latestBlockNumber);
       this.getLatestBlocksInfo();
     } catch (e) {
-      this.setState({ error: true });
+      console.log("Error");
     }
   };
 
@@ -47,54 +106,60 @@ class App extends Component<AppProps, AppState> {
     const { getBlock } = this.props;
     for (let i = 1; i <= 10; i++) {
       const newBlock = await getBlock(number - i);
-      this.setState(prevState => newBlock && addBlock(prevState, newBlock));
+      this.setState(
+        prevState => newBlock && addBlock(prevState, { ...newBlock })
+      );
     }
   };
 
   getLatestBlocksInfo = () => {
     const { blocks } = this.state;
-    blocks.map(async (block, index) => {
+    blocks.map(async ({ hash, transactions }) => {
+      this.setState(prevState =>
+        updateBlock(prevState, { infoLoading: true }, hash)
+      );
       const transactionInfo = await Promise.all(
-        block.transactions.map(
-          async trx => await this.props.getTransaction(trx)
-        )
+        transactions.map(async trx => await this.props.getTransaction(trx))
       );
       this.setState(prevState =>
-        updateBlock(prevState, { transactionInfo }, index)
+        updateBlock(prevState, { transactionInfo, infoLoading: false }, hash)
       );
     });
   };
 
-  onRefreshClick = () => {
-    this.setState({ blocks: [] });
-    this.initAsyncFlow();
-  };
-
-  toggleTransactionInfo = (hash: string, index: number, toggle: boolean) => {
+  setToggleState = (key, hashIndex, toggle) =>
     this.setState(prevState =>
-      updateBlock(prevState, { toggle: !toggle }, index)
+      updateBlock(prevState, { [key]: !toggle }, hashIndex)
     );
-  };
 
   render() {
-    const { blocks, error } = this.state;
+    const { blocks } = this.state;
     return (
-      <CardsContainer>
-        <RefreshIcon onClick={this.onRefreshClick}>⟳</RefreshIcon>
-        {blocks.map((block, index) => (
-          <BlockCard {...block} key={block.hash}>
-            <BlockInfo {...block} />
-            <BlockTransactions
-              blockHash={block.hash}
-              blockIndex={index}
-              toggle={block.toggle}
-              info={block.transactionInfo ? block.transactionInfo : []}
-              onToggle={this.toggleTransactionInfo}
-            />
+      <AppContainer>
+        {blocks.map(block => (
+          <BlockCard
+            onClick={() => {
+              this.setToggleState("infoToggle", block.hash, block.infoToggle);
+              this.setToggleState("toggle", block.hash, block.toggle);
+            }}
+            {...block}
+            key={block.hash}
+            avatar={<Blockies seed={block.hash} scale={7} />}
+            title={<BlockTitle {...block} />}
+            subtitle={<BlockSubTitle {...block} />}
+            footer={
+              <PureComponent render={moment.unix(block.timestamp).fromNow()} />
+            }
+          >
+            {block.toggle && (
+              <BlockInfo {...block} innerRef={ref => console.log(ref)} />
+            )}
+            {block.toggle && (
+              <BlockTransactions {...block} blockIndex={block.hash} />
+            )}
           </BlockCard>
         ))}
-        {error && "Error no Provider set!!!"}
-      </CardsContainer>
+      </AppContainer>
     );
   }
 }

@@ -9,8 +9,15 @@ import { injectGlobal } from "styled-components";
 const web3 = new Web3(Web3.givenProvider);
 
 injectGlobal`
+  @font-face {
+    font-family: 'Roboto', sans-serif;
+    src: url(https://fonts.googleapis.com/css?family=Roboto:400,500);
+  }
+  body {
+    margin: 0px;
+  }
   * {
-    font-Family: Arial;
+    font-Family: Roboto;
   }
 `;
 
