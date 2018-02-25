@@ -114,18 +114,17 @@ class App extends Component<AppProps, AppState> {
 
   getLatestBlocksInfo = () => {
     const { blocks } = this.state;
-    blocks.map(async ({ hash, transactions }) => {
-      this.setState(prevState =>
-        updateBlock(prevState, { infoLoading: true }, hash)
-      );
+    blocks.forEach(async ({ hash, transactions }) => {
+      this.setBlockState({ infoLoading: true }, hash);
       const transactionInfo = await Promise.all(
         transactions.map(async trx => await this.props.getTransaction(trx))
       );
-      this.setState(prevState =>
-        updateBlock(prevState, { transactionInfo, infoLoading: false }, hash)
-      );
+      this.setBlockState({ transactionInfo, infoLoading: false }, hash);
     });
   };
+
+  setBlockState = (payload, hash) =>
+    this.setState(prevState => updateBlock(prevState, { ...payload }, hash));
 
   setToggleState = (key, hashIndex, toggle) =>
     this.setState(prevState =>
@@ -139,7 +138,6 @@ class App extends Component<AppProps, AppState> {
         {blocks.map(block => (
           <BlockCard
             onClick={() => {
-              this.setToggleState("infoToggle", block.hash, block.infoToggle);
               this.setToggleState("toggle", block.hash, block.toggle);
             }}
             {...block}

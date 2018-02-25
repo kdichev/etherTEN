@@ -46,9 +46,34 @@ it("renders App without crashing if Web3 Eth is not provided", () => {
 });
 
 it("updates 'block' with values", () => {
-  const state = { blocks: [{}, {}, {}, {}, {}] };
-  const result = updateBlock(state, { toggle: true }, 0);
-  const expected = { blocks: [{ toggle: true }, {}, {}, {}, {}] };
+  const state = {
+    blocks: [
+      {
+        hash: 0xf586c298167ca897087694039612ccf18845955f04de6d3b772a4651558e6056
+      },
+      {},
+      {},
+      {},
+      {}
+    ]
+  };
+  const result = updateBlock(
+    state,
+    { toggle: true },
+    0xf586c298167ca897087694039612ccf18845955f04de6d3b772a4651558e6056
+  );
+  const expected = {
+    blocks: [
+      {
+        hash: 0xf586c298167ca897087694039612ccf18845955f04de6d3b772a4651558e6056,
+        toggle: true
+      },
+      {},
+      {},
+      {},
+      {}
+    ]
+  };
   expect(result).toEqual(expected);
 });
 
