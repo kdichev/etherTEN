@@ -49,16 +49,15 @@ export type CardProps = {
 
 export type Card = (props: CardProps) => any;
 
-type togglePayload = {
-  toggle: boolean
-};
+type togglePayload = {};
 
 type infoPayload = {
   transactionInfo?: Array<TransactionInfo>,
-  infoLoading?: boolean
+  infoLoading?: boolean,
+  toggle?: boolean
 };
 
-type updatePayloads = togglePayload | infoPayload;
+type updatePayloads = infoPayload;
 
 export type updateBlockByIndex = (
   prevState: AppState,
