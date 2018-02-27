@@ -3,12 +3,7 @@ import React from "react";
 // $FlowFixMe
 import Blockies from "react-blockies";
 import type { Transactions } from "./../types";
-import {
-  TransactionsInfoContainer,
-  DialogContent,
-  Box,
-  Arrow
-} from "./primitives";
+import { TransactionsInfoContainer, DialogContent, Arrow } from "./primitives";
 import { Text } from "./../App/primitives";
 import styled from "styled-components";
 

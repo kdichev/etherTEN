@@ -22,11 +22,16 @@ const MockEth = {
   getBlockNumber: () => setTimeout(() => null, 2000),
   getBlock: () => setTimeout(() => null, 2000)
 };
-
+const MockWeb3 = {
+  utils: {
+    fromWei: (n, type) => n
+  },
+  eth: MockEth
+};
 it("renders App without crashing if Web3 Eth is provided", () => {
   const div = document.createElement("div");
   ReactDOM.render(
-    <Provider eth={MockEth}>
+    <Provider web3={MockWeb3}>
       <App />
     </Provider>,
     div

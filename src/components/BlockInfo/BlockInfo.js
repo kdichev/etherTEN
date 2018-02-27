@@ -2,12 +2,13 @@
 import React from "react";
 import type { Info } from "./../types";
 import { BlockInfoContainer } from "./primitives";
-import { Title, SubTitle, Text } from "./../App/primitives";
+import { SubTitle, Text } from "./../App/primitives";
 import styled from "styled-components";
 
 const Container = styled.div`
   display: flex;
 `;
+
 export const BlockInfo: Info = props => (
   <BlockInfoContainer>
     <Container>

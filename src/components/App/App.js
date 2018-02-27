@@ -8,14 +8,7 @@ import type {
 import React, { Component } from "react";
 import { withWeb3 } from "./../Web3Provider";
 import { BlockCard } from "./../BlockCard/BlockCard";
-import {
-  AppContainer,
-  Title,
-  SubTitle,
-  Headline,
-  Text,
-  Display1
-} from "./primitives";
+import { AppContainer, Title, Text, Display1 } from "./primitives";
 import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
 import { BlockInfo } from "./../BlockInfo/BlockInfo";
 // $FlowFixMe
@@ -54,19 +47,6 @@ export const updateBlock: updateBlockByIndex = (
 export const addBlock: AddBlock = (prevState, newBlock) => ({
   blocks: [...prevState.blocks, newBlock]
 });
-
-const Link = props => {
-  return (
-    <a
-      href={props.href}
-      onClick={e => {
-        e.preventDefault();
-      }}
-    >
-      {props.children}
-    </a>
-  );
-};
 
 class PureComponent extends React.Component<{ render: any }> {
   shouldComponentUpdate() {
@@ -108,7 +88,7 @@ const BlockSubTitle = (props: {
   ) : null;
 
 class App extends Component<AppProps, AppState> {
-  state = { blocks: [] };
+  state = { blocks: [], error: false };
 
   componentDidMount() {
     this.initAsyncFlow();
@@ -121,7 +101,7 @@ class App extends Component<AppProps, AppState> {
       await this.getLatestBlocks(latestBlockNumber);
       this.getLatestBlocksInfo();
     } catch (e) {
-      console.log("Error");
+      this.setState({ error: true });
     }
   };
 
@@ -169,7 +149,7 @@ class App extends Component<AppProps, AppState> {
     );
 
   render() {
-    const { blocks } = this.state;
+    const { blocks, error } = this.state;
     return (
       <AppContainer>
         {blocks.map(block => (
@@ -198,6 +178,11 @@ class App extends Component<AppProps, AppState> {
             )}
           </BlockCard>
         ))}
+        {error && (
+          <Title>
+            No Web3 Provider, or something else got wrong... Need guidance...
+          </Title>
+        )}
       </AppContainer>
     );
   }

@@ -68,12 +68,16 @@ export const withWeb3: Connector = C =>
       }
     };
 
+    fromWei = (value, type) => {
+      this.context.web3.utils.fromWei(value, type);
+    };
+
     render() {
       const methods = {
         getBlock: this.getBlock,
         getBlockNumber: this.getBlockNumber,
         getTransaction: this.getTransaction,
-        fromWei: this.context.web3.utils.fromWei
+        fromWei: this.fromWei
       };
       return <C {...this.props} {...methods} />;
     }
@@ -85,16 +89,14 @@ class Web3Provider extends React.Component<{ web3: AppProps, children: Node }> {
   };
 
   static childContextTypes = {
-    web3: PropTypes.object.isRequireds,
+    web3: PropTypes.object.isRequired,
     connected: PropTypes.bool.isRequired
   };
 
   getChildContext() {
     const { web3 } = this.props;
     if (!web3) {
-      return {
-        connected: false
-      };
+      return;
     }
     return {
       web3
