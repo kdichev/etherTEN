@@ -3,32 +3,22 @@ import type { Card } from "./../types";
 import React from "react";
 import {
   CardHeaderContainer,
-  CardHeader,
   CardContent,
   CardFooter,
-  CardContainer,
-  Box
+  CardContainer
 } from "./primitives";
-// $FlowFixMe
-import Blockies from "react-blockies";
 
 export const BlockCard: Card = props => (
   <CardContainer>
-    <CardHeaderContainer>
-      <CardHeader>
-        <Blockies seed={props.hash} scale={7} />
-      </CardHeader>
+    <CardHeaderContainer onClick={props.onClick}>
       <CardContent>
-        <b>Block</b> <a href={props.hash}>{props.number}</a>
-        <br />
-        <Box title={props.miner}>Mined By: {props.miner}</Box>
-        includes{" "}
-        <a href={props.hash}>
-          {props.transactions && props.transactions.length}
-        </a>{" "}
-        Transactions
+        {props.avatar}
+        <div style={{ paddingLeft: 16, flex: 1 }}>
+          {props.title}
+          {props.subtitle}
+        </div>
       </CardContent>
-      <CardFooter>{props.timestamp} ago</CardFooter>
+      <CardFooter>{props.footer}</CardFooter>
     </CardHeaderContainer>
     {props.children}
   </CardContainer>

@@ -1,56 +1,42 @@
+// @flow
 import React from "react";
-import styled from "styled-components";
+// $FlowFixMe
 import Blockies from "react-blockies";
+import type { Transactions } from "./../types";
+import { TransactionsInfoContainer, DialogContent, Arrow } from "./primitives";
+import { Text } from "./../App/primitives";
+import styled from "styled-components";
 
-const TransactionsInfoContainer = styled.div`
-  overflow: auto;
-  min-height: 0px;
-  max-height: 250px;
-`;
-
-const DialogContent = styled.div`
-  padding: 10px;
-  margin-bottom: 10px;
+const Container = styled.div`
   display: flex;
+  align-items: center;
+  flex-direction: ${props => (props.direction ? `${props.direction}` : `row`)};
+  ${props => props.flex && `flex: ${props.flex}`};
 `;
 
-function truncate(width) {
-  return `
-    width: ${width};
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  `;
-}
-
-// Make this div truncate the text with an ellipsis
-const Box = styled.div`
-  ${truncate("110px")} flex: 6;
-`;
-
-const Arrow = styled.div`
-  flex: 1;
-`;
-
-export const BlockTransactions = props => (
-  <TransactionsInfoContainer loading={props.loading}>
-    <b
-      onClick={() =>
-        props.onToggle(props.blockHash, props.blockIndex, props.toggle)
-      }
-    >
-      Transactions:
-    </b>{" "}
-    <br />
-    {props.toggle &&
-      props.info.map(tInfo => (
-        <DialogContent>
-          <Blockies seed={tInfo.from} scale={2} />
-          <Box>{tInfo.from}</Box>
+export const BlockTransactions: Transactions = props => (
+  <TransactionsInfoContainer>
+    {props.transactionInfo.map(tInfo => (
+      <DialogContent>
+        <Container flex={6}>
+          <Blockies seed={tInfo.from} scale={4} />
+          <Text truncate={240} paddingLeft={8}>
+            {tInfo.from}
+          </Text>
+        </Container>
+        <Container direction="column">
           <Arrow>&rarr;</Arrow>
-          <Blockies seed={tInfo.to} scale={2} />
-          <Box>{tInfo.to}</Box>
-        </DialogContent>
-      ))}
+          <Text color="#093" textAlign="center">
+            {tInfo.value} ETH
+          </Text>
+        </Container>
+        <Container flex={6} direction="row-reverse">
+          <Blockies seed={tInfo.to} scale={4} />
+          <Text truncate={240} paddingRight={8}>
+            {tInfo.to}
+          </Text>
+        </Container>
+      </DialogContent>
+    ))}
   </TransactionsInfoContainer>
 );

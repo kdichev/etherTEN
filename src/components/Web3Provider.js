@@ -1,26 +1,30 @@
+// @flow
 import React from "react";
+// $FlowFixMe
 import PropTypes from "prop-types";
+import type { AppProps, Connector } from "./types";
 
 export const withWeb3: Connector = C =>
-  class Web3Component extends React.Component {
+  class Web3Component extends React.Component<AppProps> {
     static contextTypes = {
-      eth: PropTypes.object.isRequired
+      web3: PropTypes.object.isRequired,
+      connected: PropTypes.bool.isRequired
     };
 
     getBlockNumber = async () => {
-      const { eth } = this.context;
+      const { web3 } = this.context;
       try {
-        return await eth.getBlockNumber();
+        return await web3.eth.getBlockNumber();
       } catch (e) {
         console.dir(e);
-        throw new Error("Failed to fetch Block Number: ");
+        throw new Error("Failed to fetch Block Number:");
       }
     };
 
     getBlock = async number => {
-      const { eth } = this.context;
+      const { web3 } = this.context;
       try {
-        const response = await eth.getBlock(number);
+        const response = await web3.eth.getBlock(number);
         if (response) {
           const {
             difficulty,
@@ -28,7 +32,8 @@ export const withWeb3: Connector = C =>
             number,
             timestamp,
             miner,
-            hash
+            hash,
+            gasUsed
           } = response;
           return {
             difficulty,
@@ -36,7 +41,8 @@ export const withWeb3: Connector = C =>
             number,
             timestamp,
             miner,
-            hash
+            hash,
+            gasUsed
           };
         }
       } catch (e) {
@@ -50,46 +56,51 @@ export const withWeb3: Connector = C =>
     }
 
     getTransaction = async hash => {
-      const { eth } = this.context;
+      const { web3 } = this.context;
       try {
-        return await eth.getTransaction(hash);
+        const result = await web3.eth.getTransaction(hash);
+        return {
+          ...result
+        };
       } catch (e) {
         console.dir(e);
-        throw new Error("Failed to fetch Block", e);
+        throw new Error("Failed to fetch Block");
       }
+    };
+
+    fromWei = (value, type) => {
+      this.context.web3.utils.fromWei(value, type);
     };
 
     render() {
       const methods = {
         getBlock: this.getBlock,
         getBlockNumber: this.getBlockNumber,
-        getTransaction: this.getTransaction
+        getTransaction: this.getTransaction,
+        fromWei: this.fromWei
       };
       return <C {...this.props} {...methods} />;
     }
   };
 
-class Web3Provider extends React.Component {
+class Web3Provider extends React.Component<{ web3: AppProps, children: Node }> {
   static propTypes = {
-    eth: PropTypes.object.isRequired
+    web3: PropTypes.object.isRequired
   };
 
   static childContextTypes = {
-    eth: PropTypes.object.isRequired
+    web3: PropTypes.object.isRequired,
+    connected: PropTypes.bool.isRequired
   };
 
   getChildContext() {
-    const { eth } = this.props;
-    if (!eth) {
-      throw new Error("No Web3 Provider");
+    const { web3 } = this.props;
+    if (!web3) {
+      return;
     }
     return {
-      eth
+      web3
     };
-  }
-
-  componentDidCatch(error, info) {
-    console.log(error, info);
   }
 
   render() {
