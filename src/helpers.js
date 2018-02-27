@@ -21,7 +21,7 @@ export const media = Object.keys(sizes).reduce((accumulator, label) => {
 }, {});
 
 export const truncate = width => `
-  width: ${width};
+  width: ${width}px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -7,14 +7,14 @@ import type { AppProps, Connector } from "./types";
 export const withWeb3: Connector = C =>
   class Web3Component extends React.Component<AppProps> {
     static contextTypes = {
-      eth: PropTypes.object.isRequired,
+      web3: PropTypes.object.isRequired,
       connected: PropTypes.bool.isRequired
     };
 
     getBlockNumber = async () => {
-      const { eth } = this.context;
+      const { web3 } = this.context;
       try {
-        return await eth.getBlockNumber();
+        return await web3.eth.getBlockNumber();
       } catch (e) {
         console.dir(e);
         throw new Error("Failed to fetch Block Number:");
@@ -22,9 +22,9 @@ export const withWeb3: Connector = C =>
     };
 
     getBlock = async number => {
-      const { eth } = this.context;
+      const { web3 } = this.context;
       try {
-        const response = await eth.getBlock(number);
+        const response = await web3.eth.getBlock(number);
         if (response) {
           const {
             difficulty,
@@ -56,9 +56,12 @@ export const withWeb3: Connector = C =>
     }
 
     getTransaction = async hash => {
-      const { eth } = this.context;
+      const { web3 } = this.context;
       try {
-        return await eth.getTransaction(hash);
+        const result = await web3.eth.getTransaction(hash);
+        return {
+          ...result
+        };
       } catch (e) {
         console.dir(e);
         throw new Error("Failed to fetch Block");
@@ -69,31 +72,32 @@ export const withWeb3: Connector = C =>
       const methods = {
         getBlock: this.getBlock,
         getBlockNumber: this.getBlockNumber,
-        getTransaction: this.getTransaction
+        getTransaction: this.getTransaction,
+        fromWei: this.context.web3.utils.fromWei
       };
       return <C {...this.props} {...methods} />;
     }
   };
 
-class Web3Provider extends React.Component<{ eth: AppProps, children: Node }> {
+class Web3Provider extends React.Component<{ web3: AppProps, children: Node }> {
   static propTypes = {
-    eth: PropTypes.object.isRequired
+    web3: PropTypes.object.isRequired
   };
 
   static childContextTypes = {
-    eth: PropTypes.object.isRequireds,
+    web3: PropTypes.object.isRequireds,
     connected: PropTypes.bool.isRequired
   };
 
   getChildContext() {
-    const { eth } = this.props;
-    if (!eth) {
+    const { web3 } = this.props;
+    if (!web3) {
       return {
         connected: false
       };
     }
     return {
-      eth
+      web3
     };
   }
 

@@ -13,7 +13,7 @@ export const BlockCard: Card = props => (
     <CardHeaderContainer onClick={props.onClick}>
       <CardContent>
         {props.avatar}
-        <div style={{ paddingLeft: 16 }}>
+        <div style={{ paddingLeft: 16, flex: 1 }}>
           {props.title}
           {props.subtitle}
         </div>

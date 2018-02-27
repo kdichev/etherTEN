@@ -1,6 +1,6 @@
 import styled from "styled-components";
 // import transition from "styled-transition-group";
-import { media } from "./../../helpers";
+import { media, truncate } from "./../../helpers";
 
 export const AppContainer = styled.div`
   display: flex;
@@ -19,18 +19,56 @@ export const RefreshIcon = styled.div`
   cursor: pointer;
 `;
 
+export const Headline = styled.div`
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: 0px;
+  font-weight: 300;
+  color: #212121;
+  text-transform: inherit;
+`;
 export const Title = styled.div`
-  font-family: Roboto;
-  font-weight: bold;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0.05px;
+  font-weight: 400;
+  color: #212121;
+  text-transform: inherit;
 `;
 
 export const SubTitle = styled.div`
-  font-family: Roboto;
-  color: rgba(0, 0, 0, 0.54);
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+  font-weight: 300;
+  color: #212121;
+  text-transform: inherit;
+`;
+
+export const Text = styled.div`
+  font-size: 13px;
+  line-height: 24px;
+  letter-spacing: 0.1px;
+  font-weight: 400;
+  color: ${props => (props.color ? props.color : "#212121")};
+  text-transform: inherit;
+  ${props => props.truncate && truncate(props.truncate)};
+  ${props => props.paddingLeft && `padding-left: 8px;`};
+  ${props => props.paddingRight && `padding-right: 8px;`};
+  text-align: ${props => (props.textAlign ? props.textAlign : "initial")};
 `;
 
 export const ActionsContainer = styled.div`
   margin-top: 16px;
   display: flex;
   justify-content: flex-end;
+`;
+
+export const Display1 = styled.div`
+  font-size: 34px;
+  line-height: 40px;
+  letter-spacing: 0px;
+  font-weight: 300;
+  color: #757575;
+  text-transform: inherit;
 `;

@@ -11,18 +11,17 @@ const web3 = new Web3(Web3.givenProvider);
 injectGlobal`
   @font-face {
     font-family: 'Roboto', sans-serif;
-    src: url(https://fonts.googleapis.com/css?family=Roboto:400,500);
+    src: url(https://fonts.googleapis.com/css?family=Roboto:400,100,500,300italic,500italic,700italic,900,300);
   }
   body {
+    font-family: "Roboto", 'Helvetica Neue, Helvetica, Arial';
+    text-rendering: optimizeLegibility;
     margin: 0px;
-  }
-  * {
-    font-Family: Roboto;
   }
 `;
 
 ReactDOM.render(
-  <Web3Provider eth={web3.eth}>
+  <Web3Provider web3={web3}>
     <App />
   </Web3Provider>,
   document.getElementById("root")

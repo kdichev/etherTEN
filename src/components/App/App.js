@@ -8,13 +8,35 @@ import type {
 import React, { Component } from "react";
 import { withWeb3 } from "./../Web3Provider";
 import { BlockCard } from "./../BlockCard/BlockCard";
-import { AppContainer, Title, SubTitle } from "./primitives";
+import {
+  AppContainer,
+  Title,
+  SubTitle,
+  Headline,
+  Text,
+  Display1
+} from "./primitives";
 import { BlockTransactions } from "./../BlockTransactions/BlockTransactions";
 import { BlockInfo } from "./../BlockInfo/BlockInfo";
 // $FlowFixMe
 import Blockies from "react-blockies";
 // $FlowFixMe
 import moment from "moment";
+// $FlowFixMe
+import styled, { keyframes } from "styled-components";
+
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+const Spinner = styled.div`
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 3px solid #3498db;
+  width: 10px;
+  height: 10px;
+  animation: ${spin} 500ms linear infinite;
+`;
 
 export const updateBlock: updateBlockByIndex = (
   prevState,
@@ -62,27 +84,28 @@ const BlockTitle = (props: {
 }) => (
   <Title>
     Block
-    <Link href={props.hash} onClick={props.onClick}>
-      {props.number}
-    </Link>
+    {props.number}
   </Title>
 );
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: ${props => (props.direction ? `${props.direction}` : `row`)};
+  ${props => props.flex && `flex: ${props.flex}`};
+`;
 
 const BlockSubTitle = (props: {
   onClick?: () => void,
   transactions: [],
   infoLoading?: boolean,
   hash: string
-}) => (
-  <SubTitle>
-    includes{" "}
-    <Link href={props.hash} onClick={props.onClick}>
-      {props.transactions.length}
-    </Link>{" "}
-    trx <br />
-    {props.infoLoading && "Loading Transactions..."}
-  </SubTitle>
-);
+}) =>
+  props.transactionInfo ? (
+    <Container>
+      <Display1>{props.transactionInfo.length}</Display1>
+      <Text>trx</Text>
+    </Container>
+  ) : null;
 
 class App extends Component<AppProps, AppState> {
   state = { blocks: [] };
@@ -117,10 +140,24 @@ class App extends Component<AppProps, AppState> {
     blocks.forEach(async ({ hash, transactions }) => {
       this.setBlockState({ infoLoading: true }, hash);
       const transactionInfo = await Promise.all(
-        transactions.map(async trx => await this.props.getTransaction(trx))
+        transactions
+          .map(async trx => await this.props.getTransaction(trx))
+          .filter(this.validateTransactions)
+          .map(async item => {
+            const result = await item;
+            return {
+              ...result,
+              value: this.props.fromWei(result.value, "ether")
+            };
+          })
       );
       this.setBlockState({ transactionInfo, infoLoading: false }, hash);
     });
+  };
+
+  validateTransactions = async item => {
+    const result = await item;
+    return result.value > "0" && result.to;
   };
 
   setBlockState = (payload, hash) =>
@@ -137,16 +174,20 @@ class App extends Component<AppProps, AppState> {
       <AppContainer>
         {blocks.map(block => (
           <BlockCard
-            onClick={() => {
-              this.setToggleState("toggle", block.hash, block.toggle);
-            }}
+            onClick={() =>
+              this.setToggleState("toggle", block.hash, block.toggle)
+            }
             {...block}
             key={block.hash}
             avatar={<Blockies seed={block.hash} scale={7} />}
             title={<BlockTitle {...block} />}
-            subtitle={<BlockSubTitle {...block} />}
+            subtitle={
+              <PureComponent
+                render={<Text>{moment.unix(block.timestamp).fromNow()}</Text>}
+              />
+            }
             footer={
-              <PureComponent render={moment.unix(block.timestamp).fromNow()} />
+              block.infoLoading ? <Spinner /> : <BlockSubTitle {...block} />
             }
           >
             {block.toggle && (
